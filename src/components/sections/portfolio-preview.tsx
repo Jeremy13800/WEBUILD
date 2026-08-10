@@ -1,0 +1,77 @@
+import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { projects } from "@/data/projects";
+import { SectionHeading } from "@/components/ui/section-heading";
+import { Container } from "@/components/ui/container";
+import { ButtonLink } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Reveal } from "@/components/motion/reveal";
+import { BrowserFrame } from "@/components/mockups/browser-frame";
+import { cn } from "@/lib/utils";
+
+/**
+ * Portfolio — section prioritaire (brief §10). Chaque projet occupe une
+ * grande partie de l'écran, en alternance gauche/droite : jamais une
+ * grille de petites cartes identiques.
+ */
+export function PortfolioPreview() {
+  return (
+    <section id="realisations" className="bg-paper py-24 sm:py-32">
+      <Container>
+        <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
+          <SectionHeading
+            kicker="Réalisations"
+            title="Voir avant de croire."
+            subtitle="Des projets réels, conçus pour des artisans du bâtiment. Aucun résultat inventé — le travail parle de lui-même."
+          />
+          <ButtonLink href="/realisations" variant="secondary-light" className="hidden shrink-0 sm:inline-flex">
+            Toutes les réalisations
+            <ArrowRight className="size-4" strokeWidth={2.5} />
+          </ButtonLink>
+        </div>
+
+        <div className="mt-16 flex flex-col gap-24">
+          {projects.map((project, i) => (
+            <Reveal
+              key={project.slug}
+              className={cn(
+                "grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16",
+                i % 2 === 1 && "lg:[&>*:first-child]:order-2",
+              )}
+            >
+              <BrowserFrame project={project} className={cn(i % 2 === 0 ? "lg:-rotate-1" : "lg:rotate-1")} />
+
+              <div className="flex flex-col items-start gap-5">
+                <div className="flex items-center gap-2">
+                  <Badge>{project.metier}</Badge>
+                  <Badge>{project.ville}</Badge>
+                  {project.status === "concept" && <Badge>Projet concept</Badge>}
+                </div>
+                <h3 className="font-[family-name:var(--font-display)] text-3xl font-medium text-ink sm:text-4xl">
+                  {project.name}
+                </h3>
+                <p className="text-base leading-relaxed text-ink-soft">{project.summary}</p>
+                <ul className="flex flex-col gap-2">
+                  {project.caracteristiques.slice(0, 3).map((c) => (
+                    <li key={c} className="flex items-start gap-2.5 text-sm text-ink-soft">
+                      <span className="mt-2 size-1 shrink-0 rounded-full bg-clay-600" />
+                      {c}
+                    </li>
+                  ))}
+                </ul>
+                <ButtonLink href={`/realisations/${project.slug}`} variant="secondary-light" className="mt-2">
+                  Voir le projet
+                  <ArrowUpRight className="size-4" strokeWidth={2.5} />
+                </ButtonLink>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
+        <ButtonLink href="/realisations" variant="secondary-light" className="mt-16 w-full sm:hidden">
+          Toutes les réalisations
+          <ArrowRight className="size-4" strokeWidth={2.5} />
+        </ButtonLink>
+      </Container>
+    </section>
+  );
+}

@@ -1,0 +1,119 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   WeBatisseur — Design tokens
+   Palette « Papier / Encre / Argile » : un fond neutre chaleureux, une encre
+   profonde pour la structure et les sections sombres (Hero, Footer), et une
+   argile (clay) réservée exclusivement à l'action (CTA). Deux tons + une
+   typographie display marquée valent mieux qu'une palette multicolore —
+   voir /a-propos pour la logique du design system.
+   ========================================================================== */
+
+:root {
+  /* Neutres — papier chaud, jamais gris pur */
+  --color-paper: #f6f3ee;
+  --color-paper-dim: #efe9dd;
+  --color-card: #ffffff;
+  --color-ink: #1c1712;
+  --color-ink-soft: #55504a;
+  --color-ink-faint: #8a837a;
+  --color-line: #e4ddd0;
+  --color-line-strong: #d2c8b4;
+
+  /* Encre profonde — réservée aux sections sombres (Hero, Footer, CTA final) */
+  --color-ink-950: #120e0a;
+  --color-ink-900: #1c1712;
+  --color-ink-800: #29221a;
+  --color-ink-700: #3a2f22;
+  --color-sand: #ded4c3;
+  --color-sand-faint: #a99e8c;
+
+  /* Argile (clay) — accent exclusivement réservé aux CTA / accents ponctuels */
+  --color-clay-700: #8c3f1c;
+  --color-clay-600: #b4531f;
+  --color-clay-500: #c76c34;
+  --color-clay-400: #dd8c57;
+  --color-clay-200: #eec6a5;
+  --color-clay-100: #f6e2d0;
+  --color-clay-50: #fbf0e5;
+
+  /* Rayons — parcimonie volontaire */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 22px;
+  --radius-xl: 32px;
+
+  /* Ombres — douces et stratifiées, jamais dures */
+  --shadow-sm: 0 1px 2px rgba(28, 23, 18, 0.06), 0 1px 1px rgba(28, 23, 18, 0.04);
+  --shadow-md: 0 10px 28px rgba(28, 23, 18, 0.1), 0 2px 6px rgba(28, 23, 18, 0.06);
+  --shadow-lg: 0 28px 64px rgba(18, 14, 10, 0.26), 0 6px 16px rgba(18, 14, 10, 0.12);
+  --shadow-glow-clay: 0 0 0 1px rgba(180, 83, 31, 0.35), 0 14px 36px rgba(180, 83, 31, 0.35);
+
+  /* Easings « premium » */
+  --ease-out-premium: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@theme inline {
+  --color-paper: var(--color-paper);
+  --color-paper-dim: var(--color-paper-dim);
+  --color-card: var(--color-card);
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-ink-faint: var(--color-ink-faint);
+  --color-line: var(--color-line);
+  --color-line-strong: var(--color-line-strong);
+
+  --color-ink-950: var(--color-ink-950);
+  --color-ink-900: var(--color-ink-900);
+  --color-ink-800: var(--color-ink-800);
+  --color-ink-700: var(--color-ink-700);
+  --color-sand: var(--color-sand);
+  --color-sand-faint: var(--color-sand-faint);
+
+  --color-clay-700: var(--color-clay-700);
+  --color-clay-600: var(--color-clay-600);
+  --color-clay-500: var(--color-clay-500);
+  --color-clay-400: var(--color-clay-400);
+  --color-clay-200: var(--color-clay-200);
+  --color-clay-100: var(--color-clay-100);
+  --color-clay-50: var(--color-clay-50);
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+
+  --font-sans: var(--font-geist-sans);
+  --font-display: var(--font-fraunces);
+}
+
+body {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: var(--color-clay-200);
+  color: var(--color-ink-950);
+}
+
+:focus-visible {
+  outline-color: var(--color-clay-600);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
