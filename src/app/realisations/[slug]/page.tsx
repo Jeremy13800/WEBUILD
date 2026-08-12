@@ -8,6 +8,9 @@ import { Container } from "@/components/ui/container";
 import { ButtonLink } from "@/components/ui/button";
 import { Badge, Kicker } from "@/components/ui/badge";
 import { Reveal } from "@/components/motion/reveal";
+import { SplitText } from "@/components/motion/split-text";
+import { BlueprintMarks } from "@/components/motion/blueprint-marks";
+import { Tilt } from "@/components/motion/tilt";
 import { BrowserFrame } from "@/components/mockups/browser-frame";
 import { PhoneFrame } from "@/components/mockups/phone-frame";
 
@@ -58,8 +61,12 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
-      <section className="bg-ink-950 pt-16 pb-24 text-white sm:pt-20">
-        <Container>
+      <section className="grain relative overflow-hidden bg-ink-950 pt-16 pb-24 text-white sm:pt-20">
+        <div className="pointer-events-none absolute inset-0" aria-hidden>
+          <div className="animate-hero-aurora-b absolute top-[-20%] right-[-15%] size-[440px] rounded-full bg-clay-600/15 blur-[130px]" />
+        </div>
+        <BlueprintMarks />
+        <Container className="relative">
           <Link
             href="/realisations"
             className="inline-flex items-center gap-2 text-sm font-medium text-sand-faint hover:text-white"
@@ -75,11 +82,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                   {project.metier} · {project.ville}
                 </Kicker>
               </Reveal>
-              <Reveal delay={0.05}>
-                <h1 className="mt-5 font-[family-name:var(--font-display)] text-4xl leading-[1.08] font-medium tracking-[-0.01em] sm:text-6xl">
-                  {project.name}
-                </h1>
-              </Reveal>
+              <h1 className="mt-5 font-[family-name:var(--font-display)] text-4xl leading-[1.08] font-normal tracking-[-0.01em] sm:text-6xl">
+                <SplitText trigger="mount" delay={0.05} segments={[{ text: project.name }]} />
+              </h1>
               <Reveal delay={0.1}>
                 <p className="mt-5 max-w-lg text-lg text-sand">{project.summary}</p>
               </Reveal>
@@ -100,9 +105,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
 
       <section className="bg-paper pt-0">
         <Container className="-mt-14 sm:-mt-16">
-          <Reveal className="relative pb-[6%]">
-            <BrowserFrame project={project} />
-            <PhoneFrame project={project} className="absolute -bottom-4 right-[8%] hidden w-[22%] sm:block" />
+          <Reveal>
+            <Tilt className="relative pb-[6%]">
+              <BrowserFrame project={project} />
+              <PhoneFrame project={project} className="absolute -bottom-4 right-[8%] hidden w-[22%] sm:block" />
+            </Tilt>
           </Reveal>
         </Container>
       </section>
@@ -110,8 +117,8 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
       <section className="bg-paper py-24 sm:py-32">
         <Container className="grid grid-cols-1 gap-10 lg:grid-cols-[0.7fr_1.3fr]">
           <div>
-            <h2 className="font-[family-name:var(--font-display)] text-2xl font-medium text-ink sm:text-3xl">
-              Objectif du projet
+            <h2 className="font-[family-name:var(--font-display)] text-2xl font-normal text-ink sm:text-3xl">
+              <SplitText trigger="inView" segments={[{ text: "Objectif du projet" }]} />
             </h2>
             <p className="mt-4 text-base leading-relaxed text-ink-soft">{project.objectif}</p>
 
@@ -148,7 +155,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
             className="group flex items-center gap-4 text-left"
           >
             <span className="text-xs font-semibold tracking-[0.14em] text-ink-faint uppercase">Projet suivant</span>
-            <span className="flex items-center gap-2 font-[family-name:var(--font-display)] text-xl font-medium text-ink">
+            <span className="flex items-center gap-2 font-[family-name:var(--font-display)] text-xl font-normal text-ink">
               {next.name}
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
             </span>

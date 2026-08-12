@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { ArrowLeft, ArrowRight, CheckCircle2, Send } from "lucide-react";
 import { siteConfig } from "@/data/site";
 import { pricingTiers } from "@/data/pricing";
+import { contactEmailBody, contactEmailSubject } from "@/lib/contact-email";
 import { cn } from "@/lib/utils";
 
 const inputClass =
@@ -63,10 +64,12 @@ const emptyForm: FormState = {
 };
 
 /**
- * Formulaire de contact progressif (brief §16-17). Pas de backend à ce
- * stade : la soumission compose un email pré-rempli — ça marche dès
- * aujourd'hui, sans service tiers à configurer. Basculer vers un vrai
- * backend plus tard ne change que `handleSubmit`.
+ * Formulaire de contact progressif (brief §16-17). Envoi en deux temps :
+ * on tente d'abord `/api/contact` (voir cette route) pour un vrai envoi
+ * silencieux ; si elle répond "not_configured" (pas de RESEND_API_KEY —
+ * voir .env.example) ou échoue pour une autre raison, on retombe sur le
+ * repli `mailto:` d'origine, qui fonctionne sans aucune configuration.
+ * L'utilisateur n'a jamais à savoir lequel des deux chemins a été pris.
  */
 export function ContactForm() {
   const searchParams = useSearchParams();
@@ -74,7 +77,7 @@ export function ContactForm() {
   const preselectedTier = pricingTiers.find((t) => t.slug === preselectedOffer);
 
   const [step, setStep] = useState(0);
-  const [status, setStatus] = useState<"idle" | "sent">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent-api" | "sent-mailto">("idle");
   const [error, setError] = useState("");
   const [form, setForm] = useState<FormState>({
     ...emptyForm,
@@ -104,53 +107,66 @@ export function ContactForm() {
     setStep((s) => Math.max(s - 1, 0));
   }
 
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-
-    const subject = `Nouveau projet — ${form.entreprise || form.nom}`;
-    const body = [
-      `Nom : ${form.nom}`,
-      form.entreprise && `Entreprise : ${form.entreprise}`,
-      form.telephone && `Téléphone : ${form.telephone}`,
-      form.email && `Email : ${form.email}`,
-      "",
-      `Métier : ${form.metier}`,
-      `Ville : ${form.ville}`,
-      form.zoneIntervention && `Zone d'intervention : ${form.zoneIntervention}`,
-      form.siteActuel && `Site actuel : ${form.siteActuel}`,
-      "",
-      form.objectif && `Objectif principal : ${form.objectif}`,
-      form.budget && `Budget indicatif : ${form.budget}`,
-      form.delai && `Délai souhaité : ${form.delai}`,
-      form.googleBusiness && `Fiche Google Business : ${form.googleBusiness}`,
-      form.logo && `Logo disponible : ${form.logo}`,
-      form.photos && `Photos disponibles : ${form.photos}`,
-      "",
-      form.commentaires && `Commentaires :\n${form.commentaires}`,
-    ]
-      .filter(Boolean)
-      .join("\n");
-
+  function fallbackToMailto() {
+    const subject = contactEmailSubject(form);
+    const body = contactEmailBody(form);
     window.location.href = `mailto:${siteConfig.email.address}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    setStatus("sent");
+    setStatus("sent-mailto");
   }
 
-  if (status === "sent") {
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    setStatus("sending");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data: { ok: boolean } = await res.json();
+      if (res.ok && data.ok) {
+        setStatus("sent-api");
+      } else {
+        fallbackToMailto();
+      }
+    } catch {
+      fallbackToMailto();
+    }
+  }
+
+  if (status === "sent-api" || status === "sent-mailto") {
     return (
       <div className="flex flex-col items-center gap-4 rounded-[var(--radius-lg)] border border-line bg-card p-10 text-center shadow-[var(--shadow-sm)]">
         <div className="grid size-12 place-items-center rounded-full bg-clay-50 text-clay-600">
           <CheckCircle2 className="size-6" strokeWidth={2} />
         </div>
         <div>
-          <p className="font-semibold text-ink">Votre client mail va s&apos;ouvrir</p>
-          <p className="mt-1 max-w-sm text-sm text-ink-soft">
-            Votre demande est pré-remplie — il ne reste plus qu&apos;à cliquer sur envoyer. Pas de messagerie
-            configurée sur cet appareil ? Écrivez-moi directement à{" "}
-            <a href={`mailto:${siteConfig.email.address}`} className="font-medium text-clay-600 hover:underline">
-              {siteConfig.email.address}
-            </a>
-            .
-          </p>
+          {status === "sent-api" ? (
+            <>
+              <p className="font-semibold text-ink">Votre demande est bien partie</p>
+              <p className="mt-1 max-w-sm text-sm text-ink-soft">
+                Je vous réponds généralement sous 24 à 48h. En attendant, vous pouvez toujours m&apos;écrire
+                directement à{" "}
+                <a href={`mailto:${siteConfig.email.address}`} className="font-medium text-clay-600 hover:underline">
+                  {siteConfig.email.address}
+                </a>
+                .
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="font-semibold text-ink">Votre client mail va s&apos;ouvrir</p>
+              <p className="mt-1 max-w-sm text-sm text-ink-soft">
+                Votre demande est pré-remplie — il ne reste plus qu&apos;à cliquer sur envoyer. Pas de messagerie
+                configurée sur cet appareil ? Écrivez-moi directement à{" "}
+                <a href={`mailto:${siteConfig.email.address}`} className="font-medium text-clay-600 hover:underline">
+                  {siteConfig.email.address}
+                </a>
+                .
+              </p>
+            </>
+          )}
         </div>
         <button
           type="button"
@@ -341,10 +357,11 @@ export function ContactForm() {
         ) : (
           <button
             type="submit"
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-clay-600 px-6 text-[0.95rem] font-semibold text-white shadow-[var(--shadow-sm)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow-clay)] active:translate-y-0"
+            disabled={status === "sending"}
+            className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-clay-600 px-6 text-[0.95rem] font-semibold text-white shadow-[var(--shadow-sm)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow-clay)] active:translate-y-0 disabled:pointer-events-none disabled:opacity-60"
           >
             <Send className="size-4" strokeWidth={2.5} />
-            Envoyer ma demande
+            {status === "sending" ? "Envoi en cours…" : "Envoyer ma demande"}
           </button>
         )}
       </div>

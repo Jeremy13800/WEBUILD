@@ -4,6 +4,9 @@ import { Container } from "@/components/ui/container";
 import { ButtonLink } from "@/components/ui/button";
 import { Kicker } from "@/components/ui/badge";
 import { Reveal } from "@/components/motion/reveal";
+import { SplitText } from "@/components/motion/split-text";
+import { BlueprintMarks } from "@/components/motion/blueprint-marks";
+import { Tilt } from "@/components/motion/tilt";
 
 export const metadata: Metadata = {
   title: "À propos",
@@ -33,31 +36,33 @@ const values = [
 export default function AProposPage() {
   return (
     <>
-      <section className="bg-ink-950 pt-16 pb-24 text-white sm:pt-20 sm:pb-32">
-        <Container className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
+      <section className="grain relative overflow-hidden bg-ink-950 pt-16 pb-24 text-white sm:pt-20 sm:pb-32">
+        <div className="pointer-events-none absolute inset-0" aria-hidden>
+          <div className="animate-hero-aurora-b absolute top-[-15%] right-[-15%] size-[440px] rounded-full bg-clay-600/15 blur-[130px]" />
+        </div>
+        <BlueprintMarks />
+        <Container className="relative grid grid-cols-1 items-center gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
           <Reveal>
             {/* TODO(client) : remplacer par une vraie photographie professionnelle. */}
-            <div className="relative aspect-[4/5] w-full max-w-sm overflow-hidden rounded-[var(--radius-lg)] bg-ink-800">
+            <Tilt className="relative aspect-[4/5] w-full max-w-sm overflow-hidden rounded-[var(--radius-lg)] bg-ink-800">
               <div className="absolute inset-0 flex items-center justify-center">
-                <span className="font-[family-name:var(--font-display)] text-7xl font-medium text-clay-400 italic">
+                <span className="font-[family-name:var(--font-display)] text-7xl font-normal text-clay-400 italic">
                   {siteConfig.name.charAt(0)}
                 </span>
               </div>
               <div className="absolute right-5 bottom-5 left-5 rounded-[var(--radius-sm)] border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-sm">
                 <p className="text-xs text-sand-faint">Photo à venir</p>
               </div>
-            </div>
+            </Tilt>
           </Reveal>
 
           <div>
             <Reveal>
               <Kicker className="text-clay-400">À propos</Kicker>
             </Reveal>
-            <Reveal delay={0.05}>
-              <h1 className="mt-5 font-[family-name:var(--font-display)] text-4xl leading-[1.1] font-medium tracking-[-0.01em] sm:text-5xl">
-                Le web, avec le même soin que votre métier.
-              </h1>
-            </Reveal>
+            <h1 className="mt-5 font-[family-name:var(--font-display)] text-4xl leading-[1.1] font-normal tracking-[-0.01em] sm:text-5xl">
+              <SplitText trigger="mount" delay={0.05} segments={[{ text: "Le web, avec le même soin que votre métier." }]} />
+            </h1>
             <Reveal delay={0.1}>
               <p className="mt-6 max-w-lg text-lg leading-relaxed text-sand">
                 Je me suis spécialisé dans la création de sites internet pour les artisans du bâtiment parce que ce
@@ -79,15 +84,21 @@ export default function AProposPage() {
         <Container>
           <Reveal>
             <Kicker>Ma façon de travailler</Kicker>
-            <h2 className="mt-4 max-w-xl font-[family-name:var(--font-display)] text-3xl font-medium text-ink sm:text-4xl">
-              Ce que vous pouvez attendre de moi.
-            </h2>
           </Reveal>
+          <h2 className="mt-4 max-w-xl font-[family-name:var(--font-display)] text-3xl font-normal text-ink sm:text-4xl">
+            <SplitText trigger="inView" segments={[{ text: "Ce que vous pouvez attendre de moi." }]} />
+          </h2>
 
           <div className="mt-14 grid grid-cols-1 gap-x-10 gap-y-12 sm:grid-cols-2">
             {values.map((v, i) => (
-              <Reveal key={v.title} delay={i * 0.05} className="flex flex-col gap-3 border-t border-line pt-6">
-                <h3 className="font-[family-name:var(--font-display)] text-xl font-medium text-ink">{v.title}</h3>
+              <Reveal
+                key={v.title}
+                delay={i * 0.05}
+                className="group flex flex-col gap-3 border-t border-line pt-6 transition-colors duration-300 hover:border-clay-500"
+              >
+                <h3 className="font-[family-name:var(--font-display)] text-xl font-normal text-ink transition-colors duration-300 group-hover:text-clay-700">
+                  {v.title}
+                </h3>
                 <p className="text-sm leading-relaxed text-ink-soft">{v.text}</p>
               </Reveal>
             ))}
@@ -97,8 +108,8 @@ export default function AProposPage() {
 
       <section className="border-t border-line bg-paper-dim py-20 text-center">
         <Container className="flex flex-col items-center gap-5">
-          <h2 className="font-[family-name:var(--font-display)] text-2xl font-medium text-ink sm:text-3xl">
-            Envie d&apos;échanger sur votre projet ?
+          <h2 className="font-[family-name:var(--font-display)] text-2xl font-normal text-ink sm:text-3xl">
+            <SplitText trigger="inView" segments={[{ text: "Envie d'échanger sur votre projet ?" }]} />
           </h2>
           <ButtonLink href={siteConfig.ctaSecondary.href} size="lg">
             {siteConfig.ctaSecondary.label}

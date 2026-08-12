@@ -5,6 +5,7 @@ import { siteConfig } from "@/data/site";
 import { Container } from "@/components/ui/container";
 import { Kicker } from "@/components/ui/badge";
 import { Reveal } from "@/components/motion/reveal";
+import { SplitText } from "@/components/motion/split-text";
 import { ContactForm } from "@/components/sections/contact-form";
 
 export const metadata: Metadata = {
@@ -21,11 +22,9 @@ export default function ContactPage() {
           <Reveal>
             <Kicker>Contact</Kicker>
           </Reveal>
-          <Reveal delay={0.05}>
-            <h1 className="mt-4 font-[family-name:var(--font-display)] text-3xl leading-[1.1] font-medium tracking-[-0.01em] text-ink sm:text-4xl">
-              Parlons de votre projet.
-            </h1>
-          </Reveal>
+          <h1 className="mt-4 font-[family-name:var(--font-display)] text-3xl leading-[1.1] font-normal tracking-[-0.01em] text-ink sm:text-4xl">
+            <SplitText trigger="mount" delay={0.05} segments={[{ text: "Parlons de votre projet." }]} />
+          </h1>
           <Reveal delay={0.1}>
             <p className="mt-4 max-w-sm text-base leading-relaxed text-ink-soft">
               Quelques questions simples sur votre activité pour bien démarrer. Aucun engagement, aucune pression —

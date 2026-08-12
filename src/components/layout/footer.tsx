@@ -7,11 +7,11 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-ink-800 bg-ink-950 text-sand">
+    <footer className="grain relative overflow-hidden border-t border-ink-800 bg-ink-950 text-sand">
       <Container className="py-16 sm:py-20">
         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div className="flex flex-col gap-4">
-            <span className="font-[family-name:var(--font-display)] text-2xl font-medium text-white">
+            <span className="font-[family-name:var(--font-display)] text-2xl font-normal text-white">
               {siteConfig.name}
             </span>
             <p className="max-w-xs text-sm leading-relaxed text-sand-faint">{siteConfig.description}</p>
@@ -49,7 +49,26 @@ export function Footer() {
           </FooterColumn>
         </div>
 
-        <div className="mt-16 flex flex-col-reverse items-start justify-between gap-4 border-t border-ink-800 pt-8 sm:flex-row sm:items-center">
+      </Container>
+
+      {/* Bandeau défilant décoratif — même vocabulaire visuel que le Hero,
+          pour que la première et la dernière impression se répondent. */}
+      <div className="overflow-hidden border-t border-ink-800 py-6" aria-hidden>
+        <div className="flex w-max shrink-0 animate-[marquee_30s_linear_infinite] items-center gap-10">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <span
+              key={i}
+              className="flex items-center gap-10 font-[family-name:var(--font-display)] text-4xl font-normal whitespace-nowrap text-white/[0.06] italic sm:text-6xl"
+            >
+              {siteConfig.name}
+              <span className="text-clay-500/20">·</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <Container>
+        <div className="flex flex-col-reverse items-start justify-between gap-4 border-t border-ink-800 py-8 sm:flex-row sm:items-center">
           <p className="text-xs text-sand-faint">
             © {year} {siteConfig.legalName}. Tous droits réservés.
           </p>

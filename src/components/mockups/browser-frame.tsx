@@ -55,7 +55,7 @@ export function BrowserFrame({ project, className }: { project: Project; classNa
         >
           <div
             className={cn(
-              "font-[family-name:var(--font-display)] leading-none font-medium",
+              "font-[family-name:var(--font-display)] leading-none font-normal",
               project.typeStyle === "serif" && "text-xl italic sm:text-2xl",
               project.typeStyle === "sans-bold" && "text-lg not-italic sm:text-xl",
               project.typeStyle === "sans-condensed" && "text-lg tracking-tight not-italic sm:text-xl",

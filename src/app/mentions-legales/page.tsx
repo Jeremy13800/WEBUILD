@@ -18,7 +18,7 @@ export default function MentionsLegalesPage() {
   return (
     <section className="bg-paper py-20 sm:py-28">
       <Container className="max-w-2xl">
-        <h1 className="font-[family-name:var(--font-display)] text-3xl font-medium text-ink">Mentions légales</h1>
+        <h1 className="font-[family-name:var(--font-display)] text-3xl font-normal text-ink">Mentions légales</h1>
 
         <div className="mt-10 flex flex-col gap-8 text-sm leading-relaxed text-ink-soft">
           <div>

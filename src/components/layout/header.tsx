@@ -40,7 +40,7 @@ export function Header() {
       )}
     >
       <Container className="flex h-18 items-center justify-between py-4">
-        <Link href="/" className="font-[family-name:var(--font-display)] text-xl font-medium tracking-tight text-ink">
+        <Link href="/" className="font-[family-name:var(--font-display)] text-xl font-normal tracking-tight text-ink">
           {siteConfig.name}
         </Link>
 
@@ -87,7 +87,7 @@ export function Header() {
               href={item.href}
               style={{ transitionDelay: open ? `${i * 40}ms` : "0ms" }}
               className={cn(
-                "border-b border-line py-5 font-[family-name:var(--font-display)] text-3xl font-medium text-ink transition-all duration-300",
+                "border-b border-line py-5 font-[family-name:var(--font-display)] text-3xl font-normal text-ink transition-all duration-300",
                 open ? "translate-x-0 opacity-100" : "translate-x-3 opacity-0",
               )}
             >

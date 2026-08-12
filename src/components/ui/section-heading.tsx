@@ -1,10 +1,17 @@
 import { cn } from "@/lib/utils";
 import { Kicker } from "@/components/ui/badge";
+import { SplitText } from "@/components/motion/split-text";
 
 /**
- * En-tête de section réutilisé partout : kicker + titre display (Fraunces)
- * + sous-titre optionnel. `align` permet de casser la monotonie
+ * En-tête de section réutilisé partout : kicker + titre display (Instrument
+ * Serif) + sous-titre optionnel. `align` permet de casser la monotonie
  * "tout centré" dénoncée dans le brief (§8).
+ *
+ * Le titre passe par `<SplitText>` — le même effet de révélation mot par
+ * mot que le Hero et le CTA final, pour que toute la page partage une
+ * seule signature de mouvement au lieu d'un simple fondu générique.
+ * `title` est typé `string` (pas `ReactNode`) : SplitText a besoin de texte
+ * brut à découper en mots, pas de JSX arbitraire.
  */
 export function SectionHeading({
   kicker,
@@ -15,7 +22,7 @@ export function SectionHeading({
   className,
 }: {
   kicker?: string;
-  title: React.ReactNode;
+  title: string;
   subtitle?: React.ReactNode;
   align?: "left" | "center";
   tone?: "light" | "dark";
@@ -32,11 +39,11 @@ export function SectionHeading({
       {kicker && <Kicker>{kicker}</Kicker>}
       <h2
         className={cn(
-          "max-w-2xl font-[family-name:var(--font-display)] text-[2.25rem] leading-[1.08] font-medium tracking-[-0.01em] sm:text-[2.75rem] lg:text-[3.25rem]",
+          "max-w-2xl font-[family-name:var(--font-display)] text-[2.5rem] leading-[1.08] font-normal tracking-[-0.01em] sm:text-[3.1rem] lg:text-[3.6rem]",
           tone === "dark" ? "text-white" : "text-ink",
         )}
       >
-        {title}
+        <SplitText trigger="inView" segments={[{ text: title }]} />
       </h2>
       {subtitle && (
         <p className={cn("max-w-xl text-base sm:text-lg", tone === "dark" ? "text-sand" : "text-ink-soft")}>

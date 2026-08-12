@@ -17,7 +17,7 @@ export default function PolitiqueConfidentialitePage() {
   return (
     <section className="bg-paper py-20 sm:py-28">
       <Container className="max-w-2xl">
-        <h1 className="font-[family-name:var(--font-display)] text-3xl font-medium text-ink">
+        <h1 className="font-[family-name:var(--font-display)] text-3xl font-normal text-ink">
           Politique de confidentialité
         </h1>
 

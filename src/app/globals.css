@@ -16,7 +16,11 @@
   --color-card: #ffffff;
   --color-ink: #1c1712;
   --color-ink-soft: #55504a;
-  --color-ink-faint: #8a837a;
+  /* #8a837a d'origine ne passait qu'à 3.38:1 sur --color-paper — sous le
+     seuil AA (4.5:1) pour du texte normal. #706a62 tient 4.83:1 tout en
+     restant visiblement plus clair que --color-ink-soft (hiérarchie à
+     trois niveaux préservée). */
+  --color-ink-faint: #706a62;
   --color-line: #e4ddd0;
   --color-line-strong: #d2c8b4;
 
@@ -85,7 +89,11 @@
   --radius-xl: var(--radius-xl);
 
   --font-sans: var(--font-geist-sans);
-  --font-display: var(--font-fraunces);
+  --font-display: var(--font-instrument-serif);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -105,6 +113,140 @@ body {
 
 :focus-visible {
   outline-color: var(--color-clay-600);
+}
+
+/* Curseur personnalisé — voir components/motion/cursor-follower.tsx.
+   Uniquement activé par JS une fois confirmé compatible (pointer fin,
+   pas de réduction de mouvement) : sans JS, le curseur natif reste. */
+.has-custom-cursor,
+.has-custom-cursor a,
+.has-custom-cursor button,
+.has-custom-cursor summary {
+  cursor: none;
+}
+.has-custom-cursor input,
+.has-custom-cursor textarea,
+.has-custom-cursor select {
+  cursor: auto;
+}
+
+/* Grain — légère texture de bruit sur les sections sombres, pour une
+   profondeur "tactile" plutôt qu'un aplat de couleur trop propre. */
+.grain {
+  position: relative;
+}
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+/* Accordéon FAQ — voir components/sections/faq-accordion.tsx. `<details>`
+   masque nativement son contenu (`display:none`) quand fermé ; le
+   `!important` est nécessaire pour battre cette règle du navigateur et
+   reprendre la main via `grid-template-rows`, ce qui permet une
+   transition de hauteur fluide qu'on ne peut pas obtenir sur `display`. */
+.faq-panel {
+  display: grid !important;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s var(--ease-out-premium);
+}
+
+details[open] .faq-panel {
+  grid-template-rows: 1fr;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ==========================================================================
+   Hero — animations décoratives (aurores, flottement, marquee, texte).
+   Purement ornemental (aria-hidden ou contenu déjà présent ailleurs) :
+   neutralisées globalement par prefers-reduced-motion ci-dessous, comme
+   toute animation du site.
+   ========================================================================== */
+@keyframes hero-aurora-a {
+  0%,
+  100% {
+    transform: translate3d(-4%, -6%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(6%, 8%, 0) scale(1.18);
+  }
+}
+
+@keyframes hero-aurora-b {
+  0%,
+  100% {
+    transform: translate3d(6%, 4%, 0) scale(1.12);
+  }
+  50% {
+    transform: translate3d(-8%, -6%, 0) scale(1);
+  }
+}
+
+@keyframes hero-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes hero-text-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Repères "plan d'architecte" — voir components/motion/blueprint-marks.tsx.
+   Le tracé se dessine une fois au montage ; 140 dépasse volontairement la
+   longueur réelle de chaque repère (120) pour que le trait soit visible en
+   entier à dashoffset 0 — voir le commentaire du composant. */
+@keyframes blueprint-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.blueprint-draw {
+  stroke: var(--color-clay-400);
+  stroke-width: 1.5;
+  stroke-linecap: square;
+  opacity: 0.35;
+  stroke-dasharray: 140;
+  stroke-dashoffset: 140;
+  animation: blueprint-draw 1s var(--ease-out-premium) forwards;
+}
+
+.animate-hero-aurora-a {
+  animation: hero-aurora-a 20s ease-in-out infinite;
+}
+
+.animate-hero-aurora-b {
+  animation: hero-aurora-b 24s ease-in-out infinite;
+}
+
+.animate-hero-float {
+  animation: hero-float 6s ease-in-out infinite;
+}
+
+.animate-hero-text-shimmer {
+  animation: hero-text-shimmer 5s linear infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {

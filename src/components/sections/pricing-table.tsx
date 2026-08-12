@@ -9,16 +9,22 @@ import { cn } from "@/lib/utils";
 export function PricingTable() {
   return (
     <div className="flex flex-col gap-12">
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        {pricingTiers.map((tier, i) => (
+      <div>
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          {pricingTiers.map((tier, i) => (
           <Reveal
             key={tier.slug}
             delay={i * 0.06}
             className={cn(
-              "flex flex-col gap-7 rounded-[var(--radius-lg)] border p-8",
+              "flex flex-col gap-7 rounded-[var(--radius-lg)] border p-8 transition-all duration-300",
               tier.recommended
-                ? "border-clay-600 bg-ink-950 text-white shadow-[var(--shadow-lg)] lg:-translate-y-3"
-                : "border-line bg-card",
+                ? // Lueur en `box-shadow` plutôt qu'un halo séparé posé
+                  // derrière : sur une grille aux marges étroites, un halo
+                  // séparé se retrouve entièrement caché par la carte
+                  // opaque juste devant lui. Le box-shadow, lui, se peint
+                  // autour de l'élément quel que soit ce qu'il y a derrière.
+                  "border-clay-600 bg-ink-950 text-white shadow-[var(--shadow-lg),0_0_90px_-15px_rgba(199,108,52,0.55)] lg:-translate-y-3 lg:hover:-translate-y-4"
+                : "border-line bg-card hover:-translate-y-1 hover:border-clay-200 hover:shadow-[var(--shadow-md)]",
             )}
           >
             <div>
@@ -29,7 +35,7 @@ export function PricingTable() {
               )}
               <h3
                 className={cn(
-                  "font-[family-name:var(--font-display)] text-2xl font-medium",
+                  "font-[family-name:var(--font-display)] text-2xl font-normal",
                   tier.recommended ? "text-white" : "text-ink",
                 )}
               >
@@ -46,7 +52,7 @@ export function PricingTable() {
               </span>
               <span
                 className={cn(
-                  "font-[family-name:var(--font-display)] text-4xl font-medium",
+                  "font-[family-name:var(--font-display)] text-4xl font-normal",
                   tier.recommended ? "text-white" : "text-ink",
                 )}
               >
@@ -90,12 +96,13 @@ export function PricingTable() {
               Démarrer mon projet
             </ButtonLink>
           </Reveal>
-        ))}
+          ))}
+        </div>
       </div>
 
       <Reveal className="flex flex-col items-start gap-4 rounded-[var(--radius-lg)] border border-line bg-card p-8 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="font-[family-name:var(--font-display)] text-xl font-medium text-ink">
+          <h3 className="font-[family-name:var(--font-display)] text-xl font-normal text-ink">
             {maintenancePlan.name}
           </h3>
           <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-soft">{maintenancePlan.description}</p>
@@ -109,7 +116,7 @@ export function PricingTable() {
           </ul>
         </div>
         <div className="flex shrink-0 flex-col items-start gap-3 sm:items-end">
-          <span className="font-[family-name:var(--font-display)] text-2xl font-medium text-ink">
+          <span className="font-[family-name:var(--font-display)] text-2xl font-normal text-ink">
             à partir de {maintenancePlan.fromPrice} €<span className="text-base text-ink-faint">/{maintenancePlan.period}</span>
           </span>
           <ButtonLink href={siteConfig.ctaSecondary.href} variant="secondary-light" size="sm">

@@ -23,8 +23,13 @@ export function PricingPreview() {
               key={tier.slug}
               delay={i * 0.06}
               className={cn(
-                "flex flex-col gap-4 rounded-[var(--radius-lg)] border p-7",
-                tier.recommended ? "border-clay-600 bg-card shadow-[var(--shadow-md)]" : "border-line bg-card",
+                "flex flex-col gap-4 rounded-[var(--radius-lg)] border p-7 transition-all duration-300 hover:-translate-y-1",
+                tier.recommended
+                  ? // Même lueur en box-shadow que la grille complète sur
+                    // /offres — voir pricing-table.tsx pour l'explication
+                    // du choix (un halo séparé se fait cacher par la carte).
+                    "border-clay-600 bg-card shadow-[var(--shadow-md),0_0_70px_-18px_rgba(199,108,52,0.55)] lg:-translate-y-2"
+                  : "border-line bg-card hover:border-clay-200 hover:shadow-[var(--shadow-md)]",
               )}
             >
               {tier.recommended && (
@@ -32,8 +37,8 @@ export function PricingPreview() {
                   Recommandée
                 </span>
               )}
-              <h3 className="font-[family-name:var(--font-display)] text-xl font-medium text-ink">{tier.name}</h3>
-              <span className="font-[family-name:var(--font-display)] text-3xl font-medium text-ink">
+              <h3 className="font-[family-name:var(--font-display)] text-xl font-normal text-ink">{tier.name}</h3>
+              <span className="font-[family-name:var(--font-display)] text-3xl font-normal text-ink">
                 {tier.fromPrice} €
               </span>
               <p className="text-sm leading-relaxed text-ink-soft">{tier.description}</p>
