@@ -4,6 +4,7 @@ import type { BenefitItem } from "@/types";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Container } from "@/components/ui/container";
 import { Reveal } from "@/components/motion/reveal";
+import { cn } from "@/lib/utils";
 
 const iconMap: Record<BenefitItem["icon"], LucideIcon> = {
   smartphone: Smartphone,
@@ -17,6 +18,10 @@ const iconMap: Record<BenefitItem["icon"], LucideIcon> = {
 };
 
 const [featured, ...rest] = benefitItems;
+
+/** Deux cartes sombres parmi les six, en écho à la carte vedette — assez
+ * pour casser le mur de blanc, pas assez pour lui faire concurrence. */
+const darkIndexes = new Set([1, 4]);
 
 /**
  * Un bénéfice mis en avant avec une composition entièrement différente
@@ -68,23 +73,43 @@ export function Benefits() {
             </div>
           </Reveal>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             {rest.map((benefit, i) => {
               const Icon = iconMap[benefit.icon];
+              const dark = darkIndexes.has(i);
               return (
                 <Reveal
                   key={benefit.title}
                   delay={(i % 4) * 0.05}
-                  className="group flex items-start gap-4 rounded-[var(--radius-lg)] border border-line bg-card p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-clay-200 hover:shadow-[var(--shadow-sm)]"
+                  className={cn(
+                    "group relative flex flex-col gap-4 overflow-hidden rounded-[var(--radius-lg)] p-6 transition-all duration-300 hover:-translate-y-1.5 hover:rotate-0 hover:shadow-[var(--shadow-lg)]",
+                    i % 2 === 0 ? "lg:-rotate-1" : "lg:rotate-1",
+                    dark
+                      ? "border border-clay-600/25 bg-ink-950 text-white shadow-[var(--shadow-md)]"
+                      : "border border-line bg-card shadow-[var(--shadow-sm)] hover:border-clay-200",
+                  )}
                 >
-                  <div className="grid size-9 shrink-0 place-items-center rounded-[var(--radius-sm)] bg-clay-50 text-clay-600 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6">
-                    <Icon className="size-4" strokeWidth={1.75} />
+                  {dark && (
+                    <div
+                      className="pointer-events-none absolute -top-10 -right-10 size-32 rounded-full bg-clay-500/25 blur-[60px]"
+                      aria-hidden
+                    />
+                  )}
+                  <div
+                    className={cn(
+                      "relative grid size-12 place-items-center rounded-full text-white shadow-[var(--shadow-sm)] transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6",
+                      dark ? "bg-clay-500" : "bg-clay-600",
+                    )}
+                  >
+                    <Icon className="size-5" strokeWidth={1.75} />
                   </div>
-                  <div>
-                    <h3 className="font-[family-name:var(--font-display)] text-base font-normal text-ink">
+                  <div className="relative">
+                    <h3 className={cn("font-[family-name:var(--font-display)] text-lg font-normal", dark ? "text-white" : "text-ink")}>
                       {benefit.title}
                     </h3>
-                    <p className="mt-1 text-xs leading-relaxed text-ink-soft">{benefit.description}</p>
+                    <p className={cn("mt-1.5 text-sm leading-relaxed", dark ? "text-sand" : "text-ink-soft")}>
+                      {benefit.description}
+                    </p>
                   </div>
                 </Reveal>
               );
