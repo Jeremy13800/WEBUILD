@@ -1,4 +1,4 @@
-# WeBatisseur — sites web pour artisans
+# WEBUILD — sites web pour artisans
 
 Site vitrine de l'activité de création de sites internet premium pour
 artisans du bâtiment (plombiers, électriciens, chauffagistes, couvreurs…).

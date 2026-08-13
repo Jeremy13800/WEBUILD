@@ -10,8 +10,7 @@ import { Tilt } from "@/components/motion/tilt";
 
 export const metadata: Metadata = {
   title: "À propos",
-  description:
-    "WeBatisseur conçoit des sites internet pour les artisans du bâtiment, avec une approche personnalisée et une vraie compréhension des petites entreprises.",
+  description: `${siteConfig.name} conçoit des sites internet pour les artisans du bâtiment, avec une approche personnalisée et une vraie compréhension des petites entreprises.`,
 };
 
 const values = [

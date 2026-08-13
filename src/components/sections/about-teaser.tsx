@@ -53,7 +53,7 @@ export function AboutTeaser() {
 
         <div className="order-1 flex flex-col items-start gap-6 lg:order-2">
           <SectionHeading
-            kicker="Qui se cache derrière WeBatisseur"
+            kicker={`Qui se cache derrière ${siteConfig.name}`}
             title="Une personne qui comprend les petites entreprises."
             subtitle="Pas une agence anonyme avec un chargé de compte différent à chaque appel : vous échangez directement avec la personne qui conçoit votre site, du premier échange à la mise en ligne."
           />
@@ -63,7 +63,7 @@ export function AboutTeaser() {
             vous rendre ce temps, avec un site qui représente vraiment la qualité de ce que vous livrez.
           </p>
           <ButtonLink href="/a-propos" variant="secondary-light">
-            En savoir plus sur WeBatisseur
+            En savoir plus sur {siteConfig.name}
             <ArrowRight className="size-4" strokeWidth={2.5} />
           </ButtonLink>
         </div>
