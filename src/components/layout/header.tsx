@@ -7,6 +7,7 @@ import { Menu, X } from "lucide-react";
 import { siteConfig } from "@/data/site";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
+import { LogoMark } from "@/components/ui/logo-mark";
 import { cn } from "@/lib/utils";
 
 export function Header() {
@@ -40,7 +41,11 @@ export function Header() {
       )}
     >
       <Container className="flex h-18 items-center justify-between py-4">
-        <Link href="/" className="font-[family-name:var(--font-display)] text-xl font-normal tracking-tight text-ink">
+        <Link
+          href="/"
+          className="flex items-center gap-2.5 font-[family-name:var(--font-display)] text-xl font-normal tracking-tight text-ink"
+        >
+          <LogoMark />
           {siteConfig.name}
         </Link>
 

@@ -1,55 +1,86 @@
 "use client";
 
-import { ArrowRight, ChevronDown, Search, Smartphone } from "lucide-react";
+import Image from "next/image";
+import {
+  ArrowRight,
+  Building,
+  Building2,
+  Car,
+  Flame,
+  Hammer,
+  Home,
+  PaintRoller,
+  Phone,
+  ShieldCheck,
+  Smartphone,
+  Snowflake,
+  TrendingUp,
+  Trees,
+  Wrench,
+  Zap,
+  type LucideIcon,
+} from "lucide-react";
 import { motion, useMotionTemplate, useMotionValue, useReducedMotion } from "framer-motion";
 import { siteConfig } from "@/data/site";
-import { projects } from "@/data/projects";
 import { Container } from "@/components/ui/container";
 import { ButtonLink } from "@/components/ui/button";
 import { Kicker } from "@/components/ui/badge";
-import { Marquee } from "@/components/ui/marquee";
 import { Reveal } from "@/components/motion/reveal";
-import { BlueprintMarks } from "@/components/motion/blueprint-marks";
 import { SplitText } from "@/components/motion/split-text";
 import { Magnetic } from "@/components/motion/magnetic";
-import { Tilt } from "@/components/motion/tilt";
-import { BrowserFrame } from "@/components/mockups/browser-frame";
-import { PhoneFrame } from "@/components/mockups/phone-frame";
-import { cn } from "@/lib/utils";
 
 /**
- * Badges flottants au-dessus de la composition — repris mot pour mot des
- * bénéfices déjà validés ailleurs sur le site (data/benefits.ts), jamais
- * une preuve inventée : ce sont des promesses de service, pas des
- * statistiques.
+ * Ligne de bénéfices sous les CTA — reprend des formulations déjà validées
+ * ailleurs sur le site (data/benefits.ts), jamais une preuve inventée : ce
+ * sont des promesses de service, pas des statistiques.
  */
-const floatingBadges = [
-  { label: "Impeccable sur mobile", icon: Smartphone, position: "top-[4%] -left-7 sm:-left-14", floatDelay: "-1s" },
-  { label: "Trouvé sur Google", icon: Search, position: "bottom-[8%] -right-6 sm:-right-12", floatDelay: "-3.5s" },
+const heroBenefits: { icon: LucideIcon; label: string }[] = [
+  { icon: Phone, label: "Pensé pour vos clients" },
+  { icon: TrendingUp, label: "Optimisé pour Google" },
+  { icon: Smartphone, label: "Impeccable sur mobile" },
+  { icon: ShieldCheck, label: "Sécurisé & performant" },
 ];
 
+/** Icône par métier pour la barre du bas — seuls les métiers réellement
+ * listés dans siteConfig.metiers apparaissent, jamais une liste dupliquée
+ * en dur ici. */
+const metierIcons: Record<string, LucideIcon> = {
+  Plombiers: Wrench,
+  Électriciens: Zap,
+  Chauffagistes: Flame,
+  Climaticiens: Snowflake,
+  Couvreurs: Home,
+  Peintres: PaintRoller,
+  Menuisiers: Hammer,
+  Maçons: Building2,
+  Paysagistes: Trees,
+  Garages: Car,
+  "Entreprises du bâtiment": Building,
+};
+const shownMetiers = siteConfig.metiers.slice(0, 7);
+const hasMoreMetiers = siteConfig.metiers.length > shownMetiers.length;
+
 /**
- * Hero — section la plus importante du site (brief §9). Répond en un
- * regard à QUOI / POUR QUI / POURQUOI / QUE FAIRE ENSUITE, et donne une
- * preuve visuelle immédiate via une composition de vraies réalisations
- * plutôt qu'une illustration générique de développeur.
+ * Hero — section la plus importante du site (brief §9).
  *
- * Les effets réutilisent le même vocabulaire que le reste du site plutôt
- * que d'en réinventer un local : `.grain`, `<Marquee>`, `<Tilt>`,
- * `<Magnetic>` et `<SplitText>` sont les mêmes composants qu'on retrouve
- * sur /offres, /realisations, le CTA final, etc. Seul le halo qui suit le
- * curseur est propre au Hero (aucune autre section n'a cette surface pour
- * le justifier). Tout s'efface sous `prefers-reduced-motion`.
+ * Traitement volontairement différent du reste du site (référence visuelle
+ * fournie par le client) : typographie sans-serif grasse plutôt que le
+ * display serif utilisé partout ailleurs, ligne de bénéfices à icônes,
+ * barre de métiers en pied de section. Restreint au Hero pour l'instant —
+ * le reste du site garde sa typographie serif habituelle.
+ *
+ * Photo fournie par le client comme fond (public/images/hero-bg.png),
+ * desktop uniquement : la recadrer en portrait sur mobile ferait passer
+ * les mockups qu'elle contient derrière le texte plutôt qu'à côté.
  */
 export function Hero() {
-  const [istreen, bkPlus, daiselec] = projects;
   const shouldReduceMotion = useReducedMotion();
 
   // Halo radial qui suit le curseur — motion values pour éviter tout
   // re-render React au déplacement de la souris (perf).
   const spotX = useMotionValue(0);
   const spotY = useMotionValue(0);
-  const spotlightBackground = useMotionTemplate`radial-gradient(560px circle at ${spotX}px ${spotY}px, rgba(221,140,87,0.16), transparent 72%)`;
+  const spotlightBackground = useMotionTemplate`radial-gradient(560px circle at ${spotX}px ${spotY}px, rgba(221,140,87,0.14), transparent 72%)`;
 
   function handleHeroPointerMove(e: React.PointerEvent<HTMLElement>) {
     if (shouldReduceMotion) return;
@@ -61,22 +92,34 @@ export function Hero() {
   return (
     <section
       onPointerMove={handleHeroPointerMove}
-      className="grain relative overflow-hidden bg-ink-950 pt-16 pb-28 sm:pt-20 sm:pb-36"
+      className="grain relative overflow-hidden bg-ink-950 pt-16 pb-12 sm:pt-20"
     >
-      {/* Trame de points */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.05]"
-        style={{
-          backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
-          backgroundSize: "28px 28px",
-        }}
-        aria-hidden
-      />
+      {/* Photo de fond — desktop uniquement (voir le commentaire du
+          composant), et largeur plafonnée à 1920px : la hauteur du Hero
+          est fixe (pilotée par le contenu, pas par le viewport), donc sur
+          un écran très large `object-fit: cover` devait recadrer
+          verticalement de plus en plus fort pour couvrir toute la largeur
+          — jusqu'à perdre la moitié de la photo en haut/bas sur un écran
+          ultra-large. Au-delà de 1920px, l'excédent affiche simplement le
+          fond encre uni de la section, qui se fond naturellement avec la
+          partie sombre de la photo. */}
+      <div className="absolute inset-y-0 right-0 hidden w-full max-w-[1920px] lg:block">
+        <Image
+          src="/images/hero-bg.png"
+          alt=""
+          fill
+          priority
+          sizes="(min-width: 1920px) 1920px, 100vw"
+          className="object-cover object-right"
+        />
 
-      {/* Aurores — halos flous en lente dérive, palette argile exclusivement */}
-      <div className="pointer-events-none absolute inset-0" aria-hidden>
-        <div className="animate-hero-aurora-a absolute top-[-22%] left-[-10%] size-[560px] rounded-full bg-clay-600/25 blur-[120px]" />
-        <div className="animate-hero-aurora-b absolute right-[-15%] bottom-[-28%] size-[520px] rounded-full bg-clay-500/20 blur-[130px]" />
+        {/* Dégradé de lisibilité — arrêts explicites plutôt que from/via/to
+            par défaut : la zone sombre doit rester pleine au moins jusqu'à
+            la largeur réelle du bloc de texte. */}
+        <div
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,var(--color-ink-950)_0%,var(--color-ink-950)_54%,transparent_82%)]"
+          aria-hidden
+        />
       </div>
 
       {/* Halo qui suit le curseur (desktop uniquement) */}
@@ -86,38 +129,28 @@ export function Hero() {
         aria-hidden
       />
 
-      {/* Repères "plan d'architecte" — signature visuelle liée à l'identité
-          bâtisseur plutôt qu'un effet générique, voir le composant. */}
-      <BlueprintMarks />
-
-      <Container className="relative grid grid-cols-1 items-center gap-16 lg:grid-cols-[1.05fr_1fr] lg:gap-8">
-        <div className="flex flex-col items-start gap-7">
+      <Container className="relative">
+        <div className="flex max-w-2xl flex-col items-start gap-7">
           <Reveal>
             <Kicker className="text-clay-400">
               <span className="h-px w-6 bg-clay-400" aria-hidden />
-              Sites internet pour artisans
+              Sites internet pour artisans du bâtiment
             </Kicker>
           </Reveal>
 
-          <h1 className="max-w-xl font-[family-name:var(--font-display)] text-[2.6rem] leading-[1.06] font-normal tracking-[-0.015em] text-white sm:text-[3.4rem] lg:text-[3.75rem]">
+          <h1 className="max-w-2xl font-sans text-[2.6rem] leading-[1.05] font-black tracking-tight text-white sm:text-[3.4rem] lg:text-[4rem]">
             <SplitText
               trigger="mount"
               delay={0.05}
-              segments={[
-                { text: "Un site à la hauteur de" },
-                {
-                  text: "votre savoir-faire.",
-                  className:
-                    "animate-hero-text-shimmer bg-[linear-gradient(90deg,var(--color-clay-200),var(--color-clay-400),var(--color-clay-200))] bg-[length:200%_auto] bg-clip-text text-transparent italic",
-                },
-              ]}
+              segments={[{ text: "Un site qui travaille autant" }, { text: "que vous.", className: "text-clay-500" }]}
             />
           </h1>
 
           <Reveal delay={0.35}>
-            <p className="max-w-md text-lg leading-relaxed text-sand">
-              {siteConfig.name} conçoit des sites internet sur mesure pour les artisans du bâtiment — clairs,
-              rapides, et pensés pour transformer vos visiteurs en appels et en devis.
+            <p className="max-w-lg text-lg leading-relaxed text-sand">
+              Des sites internet sur-mesure pour les artisans du bâtiment — clairs, rapides et pensés pour
+              transformer vos visiteurs en <span className="font-semibold text-clay-400">appels</span> et en{" "}
+              <span className="font-semibold text-clay-400">devis</span>.
             </p>
           </Reveal>
 
@@ -142,97 +175,44 @@ export function Hero() {
             </ButtonLink>
           </Reveal>
 
-          <Reveal delay={0.45} className="w-full max-w-md pt-2">
-            <Marquee items={siteConfig.metiers} />
+          <Reveal delay={0.45} className="flex flex-wrap gap-x-8 gap-y-4 pt-2">
+            {heroBenefits.map((b) => (
+              <div key={b.label} className="flex items-center gap-3">
+                <span className="grid size-9 shrink-0 place-items-center rounded-full border border-white/15 text-clay-400">
+                  <b.icon className="size-4" strokeWidth={1.75} />
+                </span>
+                <span className="text-sm font-medium text-sand">{b.label}</span>
+              </div>
+            ))}
           </Reveal>
         </div>
-
-        <Reveal delay={0.15} className="relative hidden lg:block">
-          <div className="relative mx-auto max-w-md">
-            {/* Lueur derrière la composition */}
-            <div className="absolute inset-0 -z-10 rounded-full bg-clay-600/20 blur-[100px]" aria-hidden />
-
-            {/* Ligne de cote — même motif que BlueprintMarks, au plus près
-                du produit qu'elle "mesure" plutôt qu'en fond générique. */}
-            <svg
-              className="pointer-events-none absolute -top-5 right-[10%] w-28"
-              viewBox="0 0 220 20"
-              fill="none"
-              aria-hidden
-            >
-              <path
-                className="blueprint-draw"
-                style={{ strokeDasharray: 232, strokeDashoffset: 232, animationDelay: "0.8s" }}
-                d="M0 4 L0 10 L220 10 L220 4"
-              />
-            </svg>
-
-            {/*
-              Le flottement (CSS) porte sur ce conteneur unique, le tilt 3D
-              (composant partagé Tilt) sur celui du dessous : les trois
-              pièces ne doivent JAMAIS flotter indépendamment avec des
-              délais propres, sous peine de désynchroniser leur
-              chevauchement calibré au pixel près (le téléphone recouvre
-              volontairement un coin précis de la carte principale — un
-              flottement décalé les fait dériver l'une sur l'autre et peut
-              cacher du texte).
-            */}
-            <div className="animate-hero-float">
-              <Tilt className="relative">
-                <div className="absolute -top-8 -right-4 w-[72%] rotate-[4deg] opacity-70">
-                  <BrowserFrame project={daiselec} />
-                </div>
-                <div className="relative z-10 rotate-[-3deg]">
-                  <BrowserFrame project={bkPlus} />
-                </div>
-                <div className="absolute -bottom-10 -left-10 z-20 w-[42%]">
-                  <PhoneFrame project={istreen} className="w-full" />
-                </div>
-              </Tilt>
-            </div>
-
-            {floatingBadges.map((badge, i) => (
-              <motion.div
-                key={badge.label}
-                initial={{ opacity: 0, scale: 0.85, y: 8 }}
-                whileInView={{ opacity: 1, scale: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.7 + i * 0.15, ease: [0.16, 1, 0.3, 1] }}
-                className={cn("absolute z-30", badge.position)}
-              >
-                <div
-                  className="animate-hero-float flex items-center gap-2 rounded-full border border-white/10 bg-ink-900/85 py-2 pr-4 pl-3 text-xs font-medium text-sand shadow-[var(--shadow-lg)] backdrop-blur"
-                  style={{ animationDelay: badge.floatDelay }}
-                >
-                  <span className="grid size-6 place-items-center rounded-full bg-clay-500/20 text-clay-400">
-                    <badge.icon className="size-3.5" strokeWidth={2.25} />
-                  </span>
-                  {badge.label}
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </Reveal>
       </Container>
 
-      {/* Repère de défilement — promesse concrète plutôt qu'un "découvrir" générique,
-          pour donner une vraie raison de continuer à faire défiler. */}
-      <a
-        href="#realisations"
-        aria-label="Voir les réalisations"
-        className="group absolute inset-x-0 bottom-8 z-30 hidden flex-col items-center gap-2 text-sand-faint transition-colors hover:text-clay-400 sm:flex"
-      >
-        <span className="text-[11px] font-medium tracking-[0.14em] uppercase">3 réalisations à voir</span>
-        <ChevronDown
-          className="animate-hero-float size-4 transition-transform group-hover:translate-y-0.5"
-          strokeWidth={2}
-          style={{ animationDuration: "2s" }}
-        />
-      </a>
+      {/* Barre de métiers — pied de section, données réelles uniquement
+          (siteConfig.metiers), jamais une liste dupliquée en dur. */}
+      <Reveal delay={0.5} className="relative z-10 mt-14 border-t border-white/10">
+        <Container className="flex flex-wrap items-center gap-x-10 gap-y-4 py-6">
+          <span className="text-xs font-semibold tracking-[0.14em] text-sand-faint uppercase">
+            Au service des artisans du bâtiment
+          </span>
+          <div className="flex flex-wrap items-center gap-x-7 gap-y-3">
+            {shownMetiers.map((metier) => {
+              const Icon = metierIcons[metier];
+              return (
+                <span key={metier} className="flex items-center gap-2 text-sm text-sand">
+                  {Icon && <Icon className="size-4 text-clay-400" strokeWidth={1.75} />}
+                  {metier}
+                </span>
+              );
+            })}
+            {hasMoreMetiers && <span className="text-sm font-medium text-clay-400">&amp; plus encore</span>}
+          </div>
+        </Container>
+      </Reveal>
 
       {/* Fondu vers la section suivante */}
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-32 bg-gradient-to-b from-transparent to-ink-950"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-20 h-24 bg-gradient-to-b from-transparent to-ink-950"
         aria-hidden
       />
     </section>
