@@ -96,8 +96,18 @@ html {
   scroll-behavior: smooth;
 }
 
+/* `--color-ink-950` plutôt que `--color-paper` : ce fond ne se voit
+   normalement jamais (chaque section a son propre fond), sauf dans le
+   rebond élastique du scroll (trackpad Mac/iOS) tout en haut de page — un
+   éclair visible pendant une fraction de seconde. La plupart des pages
+   démarrent sur une section sombre (Hero, bandeaux `bg-ink-950`), donc un
+   fond de secours clair y créait cette "mini bande blanche" en haut de
+   page. Les quelques pages qui démarrent clair (`LIGHT_TOP_ROUTES` dans
+   header.tsx) gardent, elles, un éclair sombre au lieu de clair au même
+   rebond — un compromis nettement moins visible que l'inverse, vu le
+   nombre de pages concernées de chaque côté. */
 body {
-  background: var(--color-paper);
+  background: var(--color-ink-950);
   color: var(--color-ink);
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
 }

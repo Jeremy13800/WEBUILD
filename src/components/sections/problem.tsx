@@ -63,7 +63,7 @@ export function Problem() {
           </Reveal>
 
           <RevealGroup className="group rounded-[var(--radius-lg)] border border-clay-600/25 bg-ink-950 p-8 shadow-[var(--shadow-lg)] transition-all duration-300 hover:-translate-y-1 hover:rotate-0 sm:p-10 lg:rotate-1">
-            <p className="mb-6 text-xs font-semibold tracking-[0.14em] text-clay-400 uppercase">Avec WeBatisseur</p>
+            <p className="mb-6 text-xs font-semibold tracking-[0.14em] text-clay-400 uppercase">Avec WeBuild</p>
             <ul className="flex flex-col gap-4">
               {after.map((item) => (
                 <RevealItem key={item} variants={revealItemVariants} className="flex items-start gap-3 text-sand">

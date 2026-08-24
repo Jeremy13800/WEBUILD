@@ -11,7 +11,7 @@ import { Tilt } from "@/components/motion/tilt";
 export const metadata: Metadata = {
   title: "À propos",
   description:
-    "WeBatisseur conçoit des sites internet pour les artisans du bâtiment, avec une approche personnalisée et une vraie compréhension des petites entreprises.",
+    "WeBuild conçoit des sites internet pour les artisans du bâtiment, avec une approche personnalisée et une vraie compréhension des petites entreprises.",
 };
 
 const values = [
@@ -36,7 +36,7 @@ const values = [
 export default function AProposPage() {
   return (
     <>
-      <section className="grain relative overflow-hidden bg-ink-950 pt-16 pb-24 text-white sm:pt-20 sm:pb-32">
+      <section className="grain relative -mt-18 overflow-hidden bg-ink-950 pt-24 pb-24 text-white sm:pt-28 sm:pb-32">
         <div className="pointer-events-none absolute inset-0" aria-hidden>
           <div className="animate-hero-aurora-b absolute top-[-15%] right-[-15%] size-[440px] rounded-full bg-clay-600/15 blur-[130px]" />
         </div>

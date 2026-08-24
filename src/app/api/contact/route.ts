@@ -46,7 +46,7 @@ export async function POST(request: Request) {
   }
 
   const to = process.env.CONTACT_TO_EMAIL || siteConfig.email.address;
-  const from = process.env.CONTACT_FROM_EMAIL || `WeBatisseur <onboarding@resend.dev>`;
+  const from = process.env.CONTACT_FROM_EMAIL || `WeBuild <onboarding@resend.dev>`;
 
   try {
     const res = await fetch("https://api.resend.com/emails", {

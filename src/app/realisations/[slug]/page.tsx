@@ -61,7 +61,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
 
-      <section className="grain relative overflow-hidden bg-ink-950 pt-16 pb-24 text-white sm:pt-20">
+      <section className="grain relative -mt-18 overflow-hidden bg-ink-950 pt-24 pb-24 text-white sm:pt-28">
         <div className="pointer-events-none absolute inset-0" aria-hidden>
           <div className="animate-hero-aurora-b absolute top-[-20%] right-[-15%] size-[440px] rounded-full bg-clay-600/15 blur-[130px]" />
         </div>
