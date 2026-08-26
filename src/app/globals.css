@@ -125,21 +125,6 @@ body {
   outline-color: var(--color-clay-600);
 }
 
-/* Curseur personnalisé — voir components/motion/cursor-follower.tsx.
-   Uniquement activé par JS une fois confirmé compatible (pointer fin,
-   pas de réduction de mouvement) : sans JS, le curseur natif reste. */
-.has-custom-cursor,
-.has-custom-cursor a,
-.has-custom-cursor button,
-.has-custom-cursor summary {
-  cursor: none;
-}
-.has-custom-cursor input,
-.has-custom-cursor textarea,
-.has-custom-cursor select {
-  cursor: auto;
-}
-
 /* Grain — légère texture de bruit sur les sections sombres, pour une
    profondeur "tactile" plutôt qu'un aplat de couleur trop propre. */
 .grain {

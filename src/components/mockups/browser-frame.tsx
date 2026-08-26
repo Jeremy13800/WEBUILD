@@ -34,7 +34,7 @@ export function BrowserFrame({ project, className }: { project: Project; classNa
       </div>
 
       {/* Contenu simulé */}
-      <div className="relative aspect-[16/10.5] w-full overflow-hidden" style={{ backgroundColor: fond.color }}>
+      <div className="relative aspect-[16/13.2] w-full overflow-hidden" style={{ backgroundColor: fond.color }}>
         {/* Nav simulée */}
         <div className="flex items-center justify-between px-[6%] pt-[6%]">
           <div className="h-2.5 w-[16%] rounded-sm" style={{ backgroundColor: fondSombre.color, opacity: 0.85 }} />
@@ -45,13 +45,20 @@ export function BrowserFrame({ project, className }: { project: Project; classNa
           </div>
         </div>
 
-        {/* Bloc "hero" */}
+        {/* Bloc "hero" — dégradé radial (au lieu d'une teinte plate) : une
+            impression de lumière et de profondeur, sans simuler une fausse
+            capture d'écran — toujours un aplat de couleur, jamais une image
+            inventée (voir data/projects.ts). */}
         <div
           className={cn(
             "mx-[6%] mt-[7%] flex flex-col gap-3 rounded-[6px] px-[6%] py-[9%]",
             project.typeStyle === "serif" ? "items-center text-center" : "items-start text-left",
           )}
-          style={{ backgroundColor: fondSombre.color }}
+          style={{
+            backgroundImage: `radial-gradient(130% 160% at ${
+              project.typeStyle === "serif" ? "50% -10%" : "10% 0%"
+            }, color-mix(in srgb, ${accent.color} 35%, ${fondSombre.color}), ${fondSombre.color} 70%)`,
+          }}
         >
           <div
             className={cn(
@@ -67,6 +74,23 @@ export function BrowserFrame({ project, className }: { project: Project; classNa
           <div className="h-2 w-[70%] rounded-full" style={{ backgroundColor: fond.color, opacity: 0.35 }} />
           <div className="h-2 w-[50%] rounded-full" style={{ backgroundColor: fond.color, opacity: 0.25 }} />
           <div className="mt-1 h-7 w-[34%] rounded-full sm:h-8" style={{ backgroundColor: accent.color }} />
+        </div>
+
+        {/* Bande de contenu sous le hero — trois blocs abstraits (icône +
+            deux lignes de texte) pour que le mockup se lise comme la suite
+            d'une vraie page plutôt qu'un unique bandeau isolé. */}
+        <div className="mx-[6%] mt-[6%] grid grid-cols-3 gap-[4%]">
+          {[0, 1, 2].map((i) => (
+            <div
+              key={i}
+              className="flex flex-col gap-[10%] rounded-[5px] p-[9%]"
+              style={{ backgroundColor: `color-mix(in srgb, ${fondSombre.color} 6%, transparent)` }}
+            >
+              <div className="size-3 rounded-full" style={{ backgroundColor: accent.color, opacity: 0.75 }} />
+              <div className="h-1.5 w-[85%] rounded-full" style={{ backgroundColor: fondSombre.color, opacity: 0.3 }} />
+              <div className="h-1.5 w-[55%] rounded-full" style={{ backgroundColor: fondSombre.color, opacity: 0.18 }} />
+            </div>
+          ))}
         </div>
       </div>
     </div>

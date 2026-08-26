@@ -10,6 +10,7 @@ import { ClipReveal } from "@/components/motion/clip-reveal";
 import { Tilt } from "@/components/motion/tilt";
 import { HoverTag } from "@/components/motion/hover-tag";
 import { BrowserFrame } from "@/components/mockups/browser-frame";
+import { PhoneFrame } from "@/components/mockups/phone-frame";
 import { cn } from "@/lib/utils";
 
 /**
@@ -48,13 +49,14 @@ export function PortfolioPreview() {
                   le plus marquant. Le sens suit la position de l'image. */}
               <ClipReveal direction={i % 2 === 0 ? "left" : "right"}>
                 <HoverTag label="Voir l'étude de projet">
-                  <Tilt>
+                  <Tilt className="relative pb-[8%]">
                     <Link
                       href={`/realisations/${project.slug}`}
                       data-cursor-hover
                       className="block transition-shadow duration-300 hover:drop-shadow-[0_28px_44px_rgba(28,23,18,0.16)]"
                     >
                       <BrowserFrame project={project} className={cn(i % 2 === 0 ? "lg:-rotate-1" : "lg:rotate-1")} />
+                      <PhoneFrame project={project} className="absolute -bottom-2 right-[8%] hidden w-[24%] sm:block" />
                     </Link>
                   </Tilt>
                 </HoverTag>
