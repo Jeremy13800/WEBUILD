@@ -16,7 +16,18 @@ import { Tilt } from "@/components/motion/tilt";
  */
 export function AboutTeaser() {
   return (
-    <section className="bg-paper py-24 sm:py-32">
+    <section className="relative bg-paper py-24 sm:py-32">
+      {/* Transition avec Process (juste avant, fond sombre) — même
+          traitement qu'entre le Hero et "Le constat" : un voile ambre très
+          faible qui se dissout dans le crème sur 50px, plus une ligne
+          d'accent avec un halo resserré + un halo large très discret. Cette
+          section n'a pas d'`overflow-hidden` (contrairement à Process) : la
+          lueur peut donc déborder librement des deux côtés de la coupure. */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-12.5 bg-gradient-to-b from-clay-500/8 to-transparent" aria-hidden />
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5 bg-gradient-to-r from-transparent via-clay-400 to-transparent shadow-[0_0_16px_2px_rgba(217,119,20,0.55),0_0_28px_10px_rgba(217,119,20,0.08)]"
+        aria-hidden
+      />
       <Container className="grid grid-cols-1 items-center gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
         <Reveal className="order-2 lg:order-1">
           <div className="relative mx-auto w-full max-w-sm">

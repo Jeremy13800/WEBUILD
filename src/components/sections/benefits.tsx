@@ -40,6 +40,16 @@ export function Benefits() {
         className="pointer-events-none absolute top-1/3 left-1/2 z-0 size-[560px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-clay-400/10 blur-[140px]"
         aria-hidden
       />
+      {/* Ligne d'accent en bas de section — même traitement qu'entre le
+          Hero et "Le constat". Cette section et Process (juste après) ont
+          toutes les deux `overflow-hidden` : la lueur ne peut pas déborder
+          d'une section vers l'autre, donc chaque section pose sa propre
+          moitié de ligne pile à son bord — les deux se touchent et se
+          lisent comme une seule ligne continue. */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-0.5 bg-gradient-to-r from-transparent via-clay-400 to-transparent shadow-[0_0_16px_2px_rgba(217,119,20,0.55),0_0_28px_10px_rgba(217,119,20,0.08)]"
+        aria-hidden
+      />
       <Container className="relative">
         <SectionHeading
           kicker="Ce que ça change"
