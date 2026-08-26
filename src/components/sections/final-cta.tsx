@@ -14,6 +14,12 @@ import { SplitText } from "@/components/motion/split-text";
 export function FinalCta() {
   return (
     <section className="grain relative overflow-hidden bg-ink-950 py-24 text-white sm:py-32">
+      {/* Moitié haute de la ligne d'accent partagée avec la FAQ (juste
+          au-dessus) — voir le commentaire dans benefits.tsx. */}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5 bg-gradient-to-r from-transparent via-clay-400 to-transparent shadow-[0_0_16px_2px_rgba(217,119,20,0.55),0_0_28px_10px_rgba(217,119,20,0.08)]"
+        aria-hidden
+      />
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.05]"
         style={{

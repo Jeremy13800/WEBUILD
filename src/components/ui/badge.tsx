@@ -5,7 +5,10 @@ export function Kicker({ children, className }: { children: React.ReactNode; cla
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2 text-xs font-semibold tracking-[0.16em] text-clay-600 uppercase",
+        // `flex-wrap` : sur les très petits écrans, un kicker long (cas du
+        // Hero) ne doit pas forcer sa ligne à déborder du viewport — il
+        // doit pouvoir repasser sur deux lignes comme n'importe quel texte.
+        "inline-flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold tracking-[0.16em] text-clay-600 uppercase",
         className,
       )}
     >

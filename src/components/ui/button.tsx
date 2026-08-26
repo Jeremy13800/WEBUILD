@@ -4,7 +4,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 /**
- * Bouton du Design System WEBUILD.
+ * Bouton du Design System WeBuild.
  *
  * `primary` (argile) est réservé aux actions de conversion — parler d'un
  * projet, démarrer. Il ne doit jamais y avoir deux boutons `primary`

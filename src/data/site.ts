@@ -1,6 +1,6 @@
 /**
  * Source unique de vérité pour l'identité, les coordonnées et la
- * navigation de WEBUILD. Toute donnée affichée sur le site (header, footer,
+ * navigation de WeBuild. Toute donnée affichée sur le site (header, footer,
  * metadata, JSON-LD, formulaires) doit venir d'ici — jamais codée en dur
  * dans un composant.
  *
@@ -10,23 +10,22 @@
  */
 
 export const siteConfig = {
-  name: "WEBUILD",
-  legalName: "WEBUILD",
+  name: "WeBuild",
+  legalName: "WeBuild",
   tagline: "Des sites web pensés pour les artisans.",
   positioning:
     "Création de sites internet sur mesure pour les artisans et entreprises du bâtiment.",
 
-  // TODO(client) : nom de domaine réel à confirmer et enregistrer — webuild.fr
-  // est un placeholder tant qu'aucun domaine n'est effectivement possédé.
+  // TODO(client) : nom de domaine définitif — placeholder tant qu'aucun
+  // domaine n'est réellement possédé/réservé.
   url: "https://webuild.fr",
 
   description:
-    "WEBUILD conçoit des sites internet modernes et professionnels pour les artisans du bâtiment : plombiers, électriciens, chauffagistes, couvreurs, menuisiers, paysagistes… Un site qui inspire confiance, se trouve sur Google et transforme vos visiteurs en appels.",
+    "WeBuild conçoit des sites internet modernes et professionnels pour les artisans du bâtiment : plombiers, électriciens, chauffagistes, couvreurs, menuisiers, paysagistes… Un site qui inspire confiance, se trouve sur Google et transforme vos visiteurs en appels.",
 
   email: {
-    // TODO(client) : adresse email définitive à confirmer avant mise en ligne
-    // (dépend du domaine réel une fois enregistré) — c'est ici qu'atterrissent
-    // les demandes du formulaire de contact.
+    // TODO(client) : adresse email définitive à confirmer avant mise en ligne —
+    // c'est ici qu'atterrissent les demandes du formulaire de contact.
     address: "bonjour@webuild.fr",
   },
 

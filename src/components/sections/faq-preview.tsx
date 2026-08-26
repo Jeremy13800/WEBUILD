@@ -21,6 +21,14 @@ export function FaqPreview() {
   return (
     <section id="faq" className="relative overflow-hidden bg-paper py-24 sm:py-32">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+      {/* Moitié basse de la ligne d'accent partagée avec FinalCta (juste
+          après) — voir le commentaire dans benefits.tsx pour la logique
+          (les deux sections ont `overflow-hidden`, la lueur ne peut pas
+          déborder de l'une vers l'autre). */}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-0.5 bg-gradient-to-r from-transparent via-clay-400 to-transparent shadow-[0_0_16px_2px_rgba(217,119,20,0.55),0_0_28px_10px_rgba(217,119,20,0.08)]"
+        aria-hidden
+      />
       <Container className="relative grid grid-cols-1 gap-12 lg:grid-cols-[0.8fr_1.2fr]">
         <div className="relative">
           {/* Point d'interrogation géant en filigrane — même langage que le

@@ -3,7 +3,6 @@ import { Instrument_Serif, Geist } from "next/font/google";
 import { siteConfig } from "@/data/site";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { CursorFollower } from "@/components/motion/cursor-follower";
 import { ScrollProgress } from "@/components/motion/scroll-progress";
 import "./globals.css";
 
@@ -94,7 +93,6 @@ export default function RootLayout({
         >
           Aller au contenu
         </a>
-        <CursorFollower />
         <ScrollProgress />
         <Header />
         <main id="main-content">{children}</main>

@@ -8,7 +8,7 @@ import { BlueprintMarks } from "@/components/motion/blueprint-marks";
 
 export default function NotFound() {
   return (
-    <section className="grain relative flex min-h-[70vh] items-center overflow-hidden bg-ink-950 py-24 text-white">
+    <section className="grain relative -mt-18 flex min-h-[70vh] items-center overflow-hidden bg-ink-950 py-24 text-white">
       <BlueprintMarks />
       <Container className="relative flex flex-col items-start gap-6">
         <Kicker className="text-clay-400">404</Kicker>

@@ -31,7 +31,26 @@ const after = [
  */
 export function Problem() {
   return (
-    <section id="apres-hero" className="bg-paper py-24 sm:py-32">
+    <section id="apres-hero" className="relative bg-paper py-24 sm:py-32">
+      {/* Ligne d'accent à la jonction avec le Hero — un premier essai en
+          dégradé (noir → transparent) donnait une traînée grise sale sur
+          le crème, pas un fondu propre. Ici, aucun mélange de couleur : une
+          fine ligne ambre avec une légère lueur, en écho aux traits de
+          lumière de la photo du Hero. Posée dans cette section (pas dans
+          le Hero, qui a overflow-hidden) pour que la lueur déborde
+          librement des deux côtés de la coupure.
+
+          Deux couches supplémentaires, très discrètes, pour suggérer que
+          la lumière du Hero "contamine" légèrement le début de cette
+          section : un voile orange qui se dissout dans le crème sur 50px
+          (pas un dégradé sombre comme le premier essai — uniquement de la
+          couleur d'accent, jamais de noir), et un halo large mais très
+          faible en plus du halo resserré existant sur la ligne elle-même. */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-12.5 bg-gradient-to-b from-clay-500/8 to-transparent" aria-hidden />
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 z-10 h-0.5 bg-gradient-to-r from-transparent via-clay-400 to-transparent shadow-[0_0_16px_2px_rgba(217,119,20,0.55),0_0_28px_10px_rgba(217,119,20,0.08)]"
+        aria-hidden
+      />
       <Container>
         <SectionHeading
           kicker="Le constat"
