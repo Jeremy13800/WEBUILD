@@ -104,13 +104,22 @@ export function Header() {
               {siteConfig.name}
             </span>
           ) : (
+            // Le PNG a une marge transparente d'environ 13% avant le début
+            // réel du pictogramme (halo lumineux du fichier source) —
+            // vérifié en scannant le canal alpha colonne par colonne.
+            // Alignée au conteneur, l'image plaçait donc le hexagone visible
+            // trop à droite par rapport au texte en dessous. La marge
+            // négative compense cet écart pour que le pictogramme (pas la
+            // boîte de l'image) démarre au même niveau que le H1.
+            // Largeur visée : ~127px mobile / ~140px desktop (retour client :
+            // "+25 à 35%", cible 130-150px sur desktop).
             <Image
               src="/images/logo-webuild.png"
               alt={siteConfig.name}
               width={326}
               height={109}
               priority
-              className="h-9 w-auto sm:h-10"
+              className="ml-[-16.8px] h-[42.2px] w-[126.6px] max-w-none shrink-0 sm:ml-[-18.6px] sm:h-[46.7px] sm:w-35"
             />
           )}
         </Link>

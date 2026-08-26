@@ -61,13 +61,21 @@ export function Benefits() {
 
             {/* Silhouette de téléphone décorative — abstraite, pas une
                 fausse capture d'écran : deux barres et un bouton, assez
-                pour évoquer "mobile" sans prétendre montrer un vrai site. */}
-            <div className="relative flex justify-end">
-              <div className="w-28 origin-bottom-right rotate-6 rounded-[20px] border-2 border-white/10 bg-white/[0.03] p-1.5 shadow-2xl transition-transform duration-500 group-hover:rotate-3">
-                <div className="flex aspect-[9/18.5] flex-col gap-2 rounded-[13px] bg-gradient-to-b from-clay-500/25 via-ink-900 to-ink-950 p-3">
-                  <div className="h-1.5 w-8 rounded-full bg-white/15" />
-                  <div className="h-1.5 w-12 rounded-full bg-white/10" />
-                  <div className="mt-auto h-6 w-14 rounded-full bg-clay-500" />
+                pour évoquer "mobile" sans prétendre montrer un vrai site.
+                Élargie (w-28 → w-44) et accompagnée d'une lueur : la carte
+                s'étire pour matcher la hauteur de la grille voisine (voir
+                le `grid` parent), et le téléphone d'origine, trop petit,
+                se perdait dans le vide sombre ainsi créé. */}
+            <div className="relative flex flex-1 items-center justify-end">
+              <div
+                className="pointer-events-none absolute right-[6%] bottom-[8%] size-56 rounded-full bg-clay-500/20 blur-[90px]"
+                aria-hidden
+              />
+              <div className="relative w-40 origin-bottom-right rotate-6 rounded-3xl border-2 border-white/15 bg-white/4 p-2 shadow-2xl transition-transform duration-500 group-hover:rotate-3 sm:w-44">
+                <div className="flex aspect-[9/18.5] flex-col gap-2.5 rounded-2xl bg-gradient-to-b from-clay-500/35 via-ink-900 to-ink-950 p-4">
+                  <div className="h-2 w-12 rounded-full bg-white/20" />
+                  <div className="h-2 w-16 rounded-full bg-white/10" />
+                  <div className="mt-auto h-8 w-20 rounded-full bg-clay-500" />
                 </div>
               </div>
             </div>
