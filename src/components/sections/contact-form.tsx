@@ -1,15 +1,21 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { ArrowLeft, ArrowRight, CheckCircle2, Send } from "lucide-react";
+import { ArrowLeft, ArrowRight, CheckCircle2, Lock, Send } from "lucide-react";
 import { siteConfig } from "@/data/site";
 import { pricingTiers } from "@/data/pricing";
 import { contactEmailBody, contactEmailSubject } from "@/lib/contact-email";
 import { cn } from "@/lib/utils";
 
+// `+10%` sur la taille/l'espacement des champs par rapport à un input
+// standard du site (voir ui/button.tsx `size: "default"` = h-12) : ce
+// formulaire vit maintenant dans un grand panneau premium (voir
+// app/contact/page.tsx) où des champs de gabarit courant se perdaient —
+// "grosse carte, petits champs".
 const inputClass =
-  "w-full rounded-md border border-line bg-paper px-4 py-2.5 text-sm text-ink placeholder:text-ink-faint transition-colors focus:border-clay-400 focus:outline-none";
+  "w-full rounded-[11px] border border-line bg-paper px-5 py-3.5 text-base text-ink placeholder:text-ink-faint transition-all focus:border-clay-400 focus:outline-none focus:shadow-[0_0_0_3px_rgba(199,108,52,0.14)]";
 
 const steps = ["Vous", "Votre activité", "Votre projet", "Derniers détails"];
 
@@ -27,6 +33,13 @@ const budgets = pricingTiers
 
 const delais = ["Dès que possible", "Dans le mois", "Dans les 3 mois", "Pas de délai précis"];
 
+const sources = [
+  "Recherche Google",
+  "Réseaux sociaux",
+  "Recommandation / bouche-à-oreille",
+  "Autre",
+];
+
 type FormState = {
   nom: string;
   entreprise: string;
@@ -42,6 +55,7 @@ type FormState = {
   googleBusiness: string;
   logo: string;
   photos: string;
+  source: string;
   commentaires: string;
 };
 
@@ -60,6 +74,7 @@ const emptyForm: FormState = {
   googleBusiness: "",
   logo: "",
   photos: "",
+  source: "",
   commentaires: "",
 };
 
@@ -137,7 +152,7 @@ export function ContactForm() {
 
   if (status === "sent-api" || status === "sent-mailto") {
     return (
-      <div className="flex flex-col items-center gap-4 rounded-[var(--radius-lg)] border border-line bg-card p-10 text-center shadow-[var(--shadow-sm)]">
+      <div className="flex h-full min-h-[360px] flex-col items-center justify-center gap-4 text-center">
         <div className="grid size-12 place-items-center rounded-full bg-clay-50 text-clay-600">
           <CheckCircle2 className="size-6" strokeWidth={2} />
         </div>
@@ -182,20 +197,31 @@ export function ContactForm() {
     );
   }
 
+  // Entrée dans un champ (typiquement en validant un <select>) soumet
+  // nativement le <form> — même sans bouton "submit" visible à l'écran, le
+  // navigateur soumet quand même le formulaire dès qu'aucun autre geste ne
+  // l'empêche. Sur une étape intermédiaire, ça envoyait la demande en
+  // sautant directement les étapes suivantes au lieu de les afficher.
+  // Interceptée ici pour avancer d'une étape à la place, tant qu'on n'est
+  // pas sur la dernière (où Entrée doit continuer à soumettre normalement).
+  function handleKeyDown(e: React.KeyboardEvent<HTMLFormElement>) {
+    if (e.key === "Enter" && step < steps.length - 1) {
+      e.preventDefault();
+      goNext();
+    }
+  }
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="flex flex-col gap-6 rounded-[var(--radius-lg)] border border-line bg-card p-6 shadow-[var(--shadow-sm)] sm:p-9"
-    >
+    <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className="flex w-full flex-col gap-7">
       {/* Progression */}
       <div>
-        <div className="flex items-center justify-between text-xs font-medium text-ink-faint">
+        <div className="flex items-center justify-between text-sm font-medium text-ink-faint">
           <span>
             Étape {step + 1} / {steps.length}
           </span>
           <span>{steps[step]}</span>
         </div>
-        <div className="mt-2 h-1 w-full overflow-hidden rounded-full bg-line">
+        <div className="mt-2.5 h-1.5 w-full overflow-hidden rounded-full bg-line">
           <div
             className="h-full rounded-full bg-clay-600 transition-all duration-300"
             style={{ width: `${((step + 1) / steps.length) * 100}%` }}
@@ -204,7 +230,7 @@ export function ContactForm() {
       </div>
 
       {step === 0 && (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <Field label="Nom complet" required>
             <input type="text" required value={form.nom} onChange={update("nom")} placeholder="Jean Dupont" className={inputClass} />
           </Field>
@@ -239,7 +265,7 @@ export function ContactForm() {
       )}
 
       {step === 1 && (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <Field label="Votre métier" required>
             <select value={form.metier} onChange={update("metier")} className={cn(inputClass, "appearance-none")}>
               <option value="">Sélectionnez votre métier</option>
@@ -276,7 +302,7 @@ export function ContactForm() {
       )}
 
       {step === 2 && (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <Field label="Objectif principal">
             <select value={form.objectif} onChange={update("objectif")} className={cn(inputClass, "appearance-none")}>
               <option value="">Sélectionnez un objectif</option>
@@ -312,11 +338,21 @@ export function ContactForm() {
 
       {step === 3 && (
         <div className="flex flex-col gap-5">
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
             <RadioField label="Fiche Google Business ?" name="googleBusiness" value={form.googleBusiness} onChange={update("googleBusiness")} />
             <RadioField label="Logo disponible ?" name="logo" value={form.logo} onChange={update("logo")} />
             <RadioField label="Photos disponibles ?" name="photos" value={form.photos} onChange={update("photos")} />
           </div>
+          <Field label="Comment nous avez-vous connus ?">
+            <select value={form.source} onChange={update("source")} className={cn(inputClass, "appearance-none")}>
+              <option value="">Sélectionnez une réponse</option>
+              {sources.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </Field>
           <Field label="Un commentaire à ajouter ?">
             <textarea
               rows={4}
@@ -347,24 +383,41 @@ export function ContactForm() {
 
         {step < steps.length - 1 ? (
           <button
+            key="continue-btn"
             type="button"
             onClick={goNext}
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-clay-600 px-6 text-[0.95rem] font-semibold text-white shadow-[var(--shadow-sm)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow-clay)] active:translate-y-0"
+            className="inline-flex h-14 items-center justify-center gap-2 rounded-md bg-clay-600 px-7 text-base font-semibold text-white shadow-[var(--shadow-sm)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow-clay)] active:translate-y-0"
           >
             Continuer
             <ArrowRight className="size-4" strokeWidth={2.5} />
           </button>
         ) : (
           <button
+            key="submit-btn"
             type="submit"
             disabled={status === "sending"}
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-md bg-clay-600 px-6 text-[0.95rem] font-semibold text-white shadow-[var(--shadow-sm)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow-clay)] active:translate-y-0 disabled:pointer-events-none disabled:opacity-60"
+            className="inline-flex h-14 items-center justify-center gap-2 rounded-md bg-clay-600 px-7 text-base font-semibold text-white shadow-[var(--shadow-sm)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[var(--shadow-glow-clay)] active:translate-y-0 disabled:pointer-events-none disabled:opacity-60"
           >
             <Send className="size-4" strokeWidth={2.5} />
             {status === "sending" ? "Envoi en cours…" : "Envoyer ma demande"}
           </button>
         )}
       </div>
+
+      {/* Réassurance discrète, visible à chaque étape — pas une case à
+          cocher RGPD (aucun traitement tiers ici, voir api/contact/route.ts
+          qui n'envoie qu'un email), juste la promesse simple demandée,
+          reliée à la vraie page de politique de confidentialité. */}
+      <p className="flex items-center gap-2 text-xs text-ink-faint">
+        <Lock className="size-3.5 shrink-0" strokeWidth={2} />
+        <span>
+          Vos informations ne seront jamais partagées —{" "}
+          <Link href="/politique-de-confidentialite" className="underline underline-offset-2 hover:text-ink-soft">
+            politique de confidentialité
+          </Link>
+          .
+        </span>
+      </p>
     </form>
   );
 }

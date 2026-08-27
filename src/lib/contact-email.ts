@@ -19,6 +19,7 @@ export type ContactFormFields = {
   googleBusiness: string;
   logo: string;
   photos: string;
+  source: string;
   commentaires: string;
 };
 
@@ -44,6 +45,7 @@ export function contactEmailBody(form: ContactFormFields) {
     form.googleBusiness && `Fiche Google Business : ${form.googleBusiness}`,
     form.logo && `Logo disponible : ${form.logo}`,
     form.photos && `Photos disponibles : ${form.photos}`,
+    form.source && `Comment il/elle nous a connus : ${form.source}`,
     "",
     form.commentaires && `Commentaires :\n${form.commentaires}`,
   ]
