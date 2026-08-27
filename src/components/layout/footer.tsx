@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/data/site";
 import { Container } from "@/components/ui/container";
@@ -7,13 +8,38 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="grain relative overflow-hidden border-t border-ink-800 bg-ink-950 text-sand">
-      <Container className="py-16 sm:py-20">
-        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
-          <div className="flex flex-col gap-4">
-            <span className="font-[family-name:var(--font-display)] text-2xl font-normal text-white">
-              {siteConfig.name}
-            </span>
+    <footer className="grain relative overflow-hidden bg-ink-950 text-sand">
+      {/* Ligne d'accent argile — même traitement (dégradé + double lueur)
+          que les jonctions sombre/clair utilisées ailleurs sur le site
+          (voir problem.tsx), plutôt que le simple `border-t` plat d'origine :
+          le footer doit fermer la page avec la même signature graphique que
+          le reste, pas un filet générique. */}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-0.5 bg-gradient-to-r from-transparent via-clay-400 to-transparent shadow-[0_0_16px_2px_rgba(217,119,20,0.55),0_0_28px_10px_rgba(217,119,20,0.08)]"
+        aria-hidden
+      />
+
+      <Container className="pt-20 pb-14 sm:pt-24">
+        {/* Dernière prise de parole avant les liens — le footer d'origine
+            passait directement de la description courte aux colonnes de
+            liens, donc se lisait comme un footer Tailwind générique plutôt
+            que la marque qui a porté tout le reste de la page. */}
+        <p className="max-w-2xl border-b border-ink-800 pb-14 font-[family-name:var(--font-display)] text-3xl leading-[1.15] font-normal text-white sm:pb-16 sm:text-4xl">
+          Votre métier mérite mieux qu&apos;un site qui{" "}
+          <span className="text-clay-400 italic">fait juste joli.</span>
+        </p>
+
+        <div className="grid grid-cols-1 gap-12 pt-14 sm:grid-cols-2 sm:pt-16 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
+          <div className="flex flex-col gap-5">
+            {/* Même logo que le header (pensé pour fond sombre) — bien plus
+                de présence que le simple libellé texte d'origine. */}
+            <Image
+              src="/images/logo-webuild.png"
+              alt={siteConfig.name}
+              width={326}
+              height={109}
+              className="h-14 w-[167px] max-w-none shrink-0 sm:h-16 sm:w-[191px]"
+            />
             <p className="max-w-xs text-sm leading-relaxed text-sand-faint">{siteConfig.description}</p>
           </div>
 

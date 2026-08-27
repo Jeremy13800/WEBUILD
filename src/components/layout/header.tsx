@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils";
  * remonte sous le header via `-mt-18` (voir ces sections) : le header
  * transparent s'y fond naturellement.
  */
-const LIGHT_TOP_ROUTES = ["/contact", "/mentions-legales", "/politique-de-confidentialite"];
+const LIGHT_TOP_ROUTES = ["/mentions-legales", "/politique-de-confidentialite"];
 
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -94,7 +94,7 @@ export function Header() {
             Ce PNG est pensé pour un fond sombre : le "Build" blanc et son
             halo fumé n'ont presque aucun contraste sur `lightHeader` (fond
             crème — vérifié, quasi illisible). Plutôt que d'imposer ce
-            défaut sur les pages concernées (contact, mentions légales,
+            défaut sur les pages concernées (mentions légales,
             confidentialité, panneau mobile ouvert), on y garde un texte
             simple en encre, parfaitement lisible, en attendant une
             variante du logo pensée pour fond clair si besoin. */}
