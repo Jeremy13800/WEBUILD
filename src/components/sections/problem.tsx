@@ -1,4 +1,5 @@
 import { X, Check, ArrowRight, ArrowDown } from "lucide-react";
+import { siteConfig } from "@/data/site";
 import { Kicker } from "@/components/ui/badge";
 import { Container } from "@/components/ui/container";
 import { Reveal, RevealGroup, RevealItem, revealItemVariants } from "@/components/motion/reveal";
@@ -104,18 +105,27 @@ export function Problem() {
           >
             <Reveal
               delay={0.15}
-              className="flex size-14 items-center justify-center rounded-full border border-line bg-paper shadow-[var(--shadow-md)] transition-transform duration-300 group-hover:translate-x-0.5"
+              className="flex size-14 items-center justify-center rounded-full border border-clay-200/70 bg-paper shadow-[var(--shadow-md),0_4px_20px_-6px_rgba(199,108,52,0.25)] transition-transform duration-300 group-hover:translate-x-0.5"
             >
               <ArrowRight className="size-5 text-clay-600" strokeWidth={2.5} />
             </Reveal>
           </div>
 
-          <Reveal className="rounded-[18px] border border-line bg-card p-8 shadow-[var(--shadow-sm)] transition-all duration-300 hover:-translate-y-1 hover:rotate-0 sm:p-12 lg:-rotate-1">
-            <p className="mb-5 text-xs font-semibold tracking-[0.14em] text-ink-faint uppercase">Trop souvent</p>
-            <ul className="flex flex-col divide-y divide-line">
+          {/* Carte "Trop souvent" — volontairement sobre et neutre : c'est
+              la situation actuelle, pas le point focal. Fond légèrement
+              distinct du crème de la section (`color-mix` entre les tokens
+              --color-card et --color-paper, pas une nouvelle couleur), ombre
+              très diffuse plutôt qu'un simple `shadow-sm`, hover à peine
+              perceptible (max -2px, contre -10px pour la carte WeBuild). */}
+          <Reveal className="rounded-[18px] border border-line bg-[color-mix(in_srgb,var(--color-card)_88%,var(--color-paper)_12%)] p-8 shadow-[0_10px_35px_rgba(40,25,15,0.04)] transition-all duration-300 hover:-translate-y-0.5 hover:rotate-0 sm:p-12 lg:-rotate-1">
+            <p className="mb-5 flex items-center gap-2.5 text-xs font-semibold tracking-[0.14em] text-ink-faint uppercase">
+              <span className="h-px w-3 bg-ink-faint/40" aria-hidden />
+              Trop souvent
+            </p>
+            <ul className="flex flex-col divide-y divide-line/70">
               {before.map((item) => (
                 <li key={item} className="flex items-center gap-3.5 py-3.5 text-ink-soft first:pt-0 last:pb-0">
-                  <span className="grid size-8 shrink-0 place-items-center rounded-full bg-paper-dim text-ink-faint">
+                  <span className="grid size-8 shrink-0 place-items-center rounded-full border border-line bg-paper-dim text-ink-faint">
                     <X className="size-4" strokeWidth={2.5} />
                   </span>
                   <span>{item}</span>
@@ -130,34 +140,66 @@ export function Problem() {
           <div className="flex items-center justify-center py-1 sm:hidden" aria-hidden>
             <Reveal
               delay={0.1}
-              className="flex size-11 items-center justify-center rounded-full border border-line bg-paper shadow-[var(--shadow-md)]"
+              className="flex size-11 items-center justify-center rounded-full border border-clay-200/70 bg-paper shadow-[var(--shadow-md)]"
             >
               <ArrowDown className="size-4 text-clay-600" strokeWidth={2.5} />
             </Reveal>
           </div>
 
-          {/* Carte WeBuild — présence très légèrement supérieure à la carte
-              de gauche (padding sm:p-13 contre sm:p-12, léger décalage vers
-              le haut) et une lueur chaude diffuse sur les contours (pas un
-              blob interne façon "glow SaaS"), pour que le regard soit
-              naturellement attiré ici plutôt que sur "Trop souvent". */}
-          <RevealGroup className="rounded-[18px] border border-clay-600/30 bg-ink-950 p-8 shadow-[0_28px_64px_rgba(18,14,10,0.28),0_0_50px_-18px_rgba(199,108,52,0.4)] transition-all duration-300 hover:-translate-y-1 hover:rotate-0 sm:p-13 lg:-translate-y-2 lg:rotate-1">
-            <p className="mb-5 text-xs font-semibold tracking-[0.14em] text-clay-400 uppercase">Avec WeBuild</p>
-            <ul className="flex flex-col divide-y divide-white/10">
-              {after.map((item) => (
-                <RevealItem
-                  key={item}
-                  variants={revealItemVariants}
-                  className="flex items-center gap-3.5 py-3.5 text-sand first:pt-0 last:pb-0"
-                >
-                  <span className="grid size-8 shrink-0 place-items-center rounded-full border border-clay-500/40 text-clay-400">
-                    <Check className="size-4" strokeWidth={2.5} />
-                  </span>
-                  <span>{item}</span>
-                </RevealItem>
-              ))}
-            </ul>
-          </RevealGroup>
+          {/* Carte WeBuild — l'objet premium de la section. Fond quasi noir
+              avec un dégradé à peine perceptible (pas un aplat uniforme),
+              bordure "dégradé cuivre" via mask-composite (jamais un simple
+              `border: 1px solid orange`), halo ambiant très diffus derrière
+              la carte plutôt qu'un glow net. `group/webuild` scope le hover
+              (border/glow qui s'intensifient à peine) sans interférer avec
+              le `group` du comparateur (qui ne gère que la flèche). */}
+          <div className="group/webuild relative">
+            <div
+              className="pointer-events-none absolute -inset-6 -z-10 rounded-[26px] opacity-60 blur-[60px] transition-opacity duration-400 group-hover/webuild:opacity-90"
+              style={{ background: "radial-gradient(60% 60% at 30% 15%, rgba(199,108,52,0.16), transparent 72%)" }}
+              aria-hidden
+            />
+
+            {/* `RevealGroup` n'accepte pas de prop `style` (voir
+                motion/reveal.tsx) — dégradé exprimé en classe Tailwind
+                arbitraire plutôt que d'étendre l'API du composant partagé
+                pour ce seul besoin. */}
+            <RevealGroup className="relative rounded-[18px] bg-[linear-gradient(145deg,#15100c_0%,#0d0a08_45%,#080706_100%)] p-8 shadow-[0_25px_70px_rgba(30,15,5,0.18),0_8px_30px_rgba(199,108,52,0.08)] transition-all duration-400 ease-[cubic-bezier(0.22,1,0.36,1)] hover:-translate-y-2.5 hover:rotate-0 hover:shadow-[0_32px_80px_rgba(30,15,5,0.24),0_10px_36px_rgba(199,108,52,0.14)] sm:p-13 lg:-translate-y-1.5 lg:rotate-1">
+              <div
+                className="pointer-events-none absolute inset-0 rounded-[18px] opacity-80 transition-opacity duration-400 group-hover/webuild:opacity-100"
+                style={{
+                  padding: 1,
+                  background:
+                    "linear-gradient(135deg, rgba(199,108,52,0.4) 0%, rgba(199,108,52,0.1) 32%, transparent 60%)",
+                  WebkitMask: "linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)",
+                  WebkitMaskComposite: "xor",
+                  maskComposite: "exclude",
+                }}
+                aria-hidden
+              />
+
+              <p className="relative mb-5 flex items-center gap-2.5 text-xs font-semibold tracking-[0.14em] text-clay-400 uppercase">
+                <span className="h-px w-3 bg-clay-500/70" aria-hidden />
+                Avec {siteConfig.name}
+              </p>
+              <ul className="relative flex flex-col divide-y divide-clay-500/10">
+                {after.map((item) => (
+                  <RevealItem
+                    key={item}
+                    variants={revealItemVariants}
+                    className="group/row flex items-center gap-3.5 py-3.5 text-[rgba(255,248,240,0.92)] transition-transform duration-300 first:pt-0 last:pb-0 hover:translate-x-1"
+                  >
+                    <span className="grid size-9 shrink-0 place-items-center rounded-full border border-clay-500/40 text-clay-400 shadow-[0_0_12px_rgba(199,108,52,0.08)] transition-colors duration-300 group-hover/row:border-clay-400/70 group-hover/row:text-clay-300">
+                      <Check className="size-4" strokeWidth={2.5} />
+                    </span>
+                    <span className="transition-colors duration-300 group-hover/row:text-[rgba(255,248,240,1)]">
+                      {item}
+                    </span>
+                  </RevealItem>
+                ))}
+              </ul>
+            </RevealGroup>
+          </div>
         </div>
 
         {/* Conclusion — referme le raisonnement de la section sans devenir
