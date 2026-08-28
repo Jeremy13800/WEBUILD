@@ -17,8 +17,13 @@ export const siteConfig = {
     "Création de sites internet sur mesure pour les artisans et entreprises du bâtiment.",
 
   // TODO(client) : nom de domaine définitif — placeholder tant qu'aucun
-  // domaine n'est réellement possédé/réservé.
-  url: "https://webuild.fr",
+  // domaine n'est réellement possédé/réservé. Piloté par une variable
+  // d'env plutôt qu'en dur : tant que webuild.fr n'est pas branché, les
+  // partages sur les réseaux (og:image, canonical…) pointaient vers un
+  // domaine mort. Ajouter NEXT_PUBLIC_SITE_URL dans les variables d'env
+  // Vercel (ex. https://webuild-nine.vercel.app en attendant le vrai
+  // domaine) corrige ça sans nouveau déploiement — juste un redeploy.
+  url: process.env.NEXT_PUBLIC_SITE_URL || "https://webuild.fr",
 
   description:
     "WeBuild conçoit des sites internet modernes et professionnels pour les artisans du bâtiment : plombiers, électriciens, chauffagistes, couvreurs, menuisiers, paysagistes… Un site qui inspire confiance, se trouve sur Google et transforme vos visiteurs en appels.",
