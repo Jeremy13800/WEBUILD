@@ -8,10 +8,15 @@ import { Tilt } from "@/components/motion/tilt";
 
 /**
  * Section humaine (brief §19) : le visiteur doit sentir qu'il parle à une
- * vraie personne, pas à une agence anonyme. Emplacement photo prévu et
- * clairement identifié en attendant un vrai portrait professionnel.
+ * vraie personne, pas à une agence anonyme.
  *
- * Même traitement que la photo équivalente sur /a-propos (Tilt, lueur) —
+ * Volontairement sans photo (choix assumé, pas un manque) : le panneau
+ * sombre reste un élément graphique abstrait (monogramme + repères), sans
+ * aucune mention "à venir" qui donnerait une impression d'inachevé — voir
+ * la même logique sur /a-propos. L'identité réelle (nom/rôle/ville) est
+ * portée par la typographie dans la colonne de texte, pas par un portrait.
+ *
+ * Même traitement que le panneau équivalent sur /a-propos (Tilt, lueur) —
  * cette variante homepage ne doit pas avoir l'air d'une version au rabais.
  */
 export function AboutTeaser() {
@@ -33,15 +38,11 @@ export function AboutTeaser() {
           <div className="relative mx-auto w-full max-w-sm">
             <div className="absolute inset-0 -z-10 rounded-full bg-clay-500/20 blur-[90px]" aria-hidden />
 
-            {/* TODO(client) : remplacer par une vraie photographie professionnelle. */}
             <Tilt className="relative aspect-[4/5] w-full overflow-hidden rounded-[var(--radius-lg)] bg-ink-950 shadow-[var(--shadow-lg)]">
               <div className="absolute inset-0 flex items-center justify-center">
                 <span className="font-[family-name:var(--font-display)] text-7xl font-normal text-clay-400 italic">
                   {siteConfig.name.charAt(0)}
                 </span>
-              </div>
-              <div className="absolute right-5 bottom-5 left-5 rounded-[var(--radius-sm)] border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-sm">
-                <p className="text-xs text-sand-faint">Photo à venir</p>
               </div>
             </Tilt>
 
@@ -68,6 +69,18 @@ export function AboutTeaser() {
             title="Une personne qui comprend les petites entreprises."
             subtitle="Pas une agence anonyme avec un chargé de compte différent à chaque appel : vous échangez directement avec la personne qui conçoit votre site, du premier échange à la mise en ligne."
           />
+          {/* Signature — répond directement à la question posée par le
+              kicker. Trait cuivre + typographie plutôt qu'une carte : reste
+              éditorial, pas une carte de visite. */}
+          <div className="flex items-center gap-3">
+            <span className="h-px w-8 shrink-0 bg-clay-500" aria-hidden />
+            <p className="text-sm">
+              <span className="font-[family-name:var(--font-display)] text-lg font-normal text-ink">
+                {siteConfig.founder.name}
+              </span>
+              <span className="text-ink-faint"> — {siteConfig.founder.role}</span>
+            </p>
+          </div>
           <p className="max-w-lg text-sm leading-relaxed text-ink-soft">
             Je me suis spécialisé dans les sites web pour artisans parce que ce sont des entreprises qui font un
             travail exigeant, souvent sans le temps ni les outils pour le montrer correctement en ligne. Mon rôle :
