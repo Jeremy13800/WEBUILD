@@ -43,15 +43,13 @@ export default function AProposPage() {
         <BlueprintMarks />
         <Container className="relative grid grid-cols-1 items-center gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-20">
           <Reveal>
-            {/* TODO(client) : remplacer par une vraie photographie professionnelle. */}
+            {/* Volontairement sans photo (choix assumé) — voir le
+                commentaire équivalent sur about-teaser.tsx. */}
             <Tilt className="relative aspect-[4/5] w-full max-w-sm overflow-hidden rounded-[var(--radius-lg)] bg-ink-800">
               <div className="absolute inset-0 flex items-center justify-center">
                 <span className="font-[family-name:var(--font-display)] text-7xl font-normal text-clay-400 italic">
                   {siteConfig.name.charAt(0)}
                 </span>
-              </div>
-              <div className="absolute right-5 bottom-5 left-5 rounded-[var(--radius-sm)] border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-sm">
-                <p className="text-xs text-sand-faint">Photo à venir</p>
               </div>
             </Tilt>
           </Reveal>
@@ -63,6 +61,19 @@ export default function AProposPage() {
             <h1 className="mt-5 font-[family-name:var(--font-display)] text-4xl leading-[1.1] font-normal tracking-[-0.01em] sm:text-5xl">
               <SplitText trigger="mount" delay={0.05} segments={[{ text: "Le web, avec le même soin que votre métier." }]} />
             </h1>
+            {/* Signature — identique à la version homepage (about-teaser.tsx). */}
+            <Reveal delay={0.08} className="mt-5 flex items-center gap-3">
+              <span className="h-px w-8 shrink-0 bg-clay-500" aria-hidden />
+              <p className="text-sm">
+                <span className="font-[family-name:var(--font-display)] text-lg font-normal text-white">
+                  {siteConfig.founder.name}
+                </span>
+                <span className="text-sand-faint">
+                  {" "}
+                  — {siteConfig.founder.role} · {siteConfig.founder.location}
+                </span>
+              </p>
+            </Reveal>
             <Reveal delay={0.1}>
               <p className="mt-6 max-w-lg text-lg leading-relaxed text-sand">
                 Je me suis spécialisé dans la création de sites internet pour les artisans du bâtiment parce que ce

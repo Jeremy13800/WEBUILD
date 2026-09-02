@@ -9,17 +9,17 @@ export const metadata: Metadata = {
 };
 
 /**
- * TODO(client) : à faire relire par un professionnel du droit avant mise en
- * ligne — en particulier la section "Droit de rétractation", dont
- * l'applicabilité dépend de la taille de l'entreprise cliente et du lien
- * entre le site commandé et son activité principale (art. L221-3 du Code de
- * la consommation), un point qui se tranche au cas par cas et ne doit pas
- * être affirmé à la légère ici.
+ * TODO(client) : à faire relire par un professionnel du droit avant tout
+ * premier contrat signé — en particulier l'article 7 "Droit de
+ * rétractation", dont l'applicabilité dépend de la taille de l'entreprise
+ * cliente et du lien entre le site commandé et son activité principale
+ * (art. L221-3 du Code de la consommation), un point qui se tranche au cas
+ * par cas et ne doit pas être affirmé à la légère ici.
  *
  * Contenu vérifiable repris tel quel depuis data/pricing.ts et les réponses
- * déjà publiées dans la FAQ (data/faq.ts) — le reste (SIRET, juridiction,
- * délais exacts, modalités précises de résiliation) est un placeholder
- * explicite, jamais inventé.
+ * déjà publiées dans la FAQ (data/faq.ts). Le reste (SIRET, juridiction,
+ * délais exacts de résiliation, clause de responsabilité) reste explicitement
+ * en attente — jamais inventé, jamais affirmé comme réglé.
  */
 export default function CgvPage() {
   return (
@@ -28,6 +28,10 @@ export default function CgvPage() {
         <h1 className="font-[family-name:var(--font-display)] text-3xl font-normal text-ink">
           Conditions générales de vente
         </h1>
+        <p className="mt-4 text-sm text-ink-faint">
+          Ce document est en cours de finalisation avec un professionnel du droit et sera complété avant tout
+          premier contrat signé.
+        </p>
 
         <div className="mt-10 flex flex-col gap-8 text-sm leading-relaxed text-ink-soft">
           <div>
@@ -58,10 +62,8 @@ export default function CgvPage() {
               ({pricingTiers.map((t) => `${t.name} à partir de ${t.fromPrice} €`).join(", ")}). Le paiement
               s&apos;effectue en général par un acompte au démarrage du projet, puis le solde à la mise en ligne du
               site — les modalités précises (montant de l&apos;acompte, moyens de paiement acceptés) sont convenues
-              ensemble avant le début de la prestation.
-              <br />
-              [TODO(client) : préciser le pourcentage exact de l&apos;acompte, les moyens de paiement acceptés et les
-              pénalités éventuelles en cas de retard de paiement.]
+              ensemble avant le début de la prestation. Le pourcentage exact de l&apos;acompte, les moyens de
+              paiement acceptés et les conditions en cas de retard de paiement sont en cours de finalisation.
             </p>
           </div>
 
@@ -70,10 +72,8 @@ export default function CgvPage() {
             <p>
               La formule &laquo; {maintenancePlan.name} &raquo; (à partir de {maintenancePlan.fromPrice} €/
               {maintenancePlan.period}) est optionnelle et reconductible tacitement. Elle peut être résiliée à tout
-              moment.
-              <br />
-              [TODO(client) : préciser le délai de préavis de résiliation et le sort du nom de domaine /
-              hébergement en cas d&apos;arrêt de l&apos;abonnement.]
+              moment ; le délai de préavis et le sort du nom de domaine et de l&apos;hébergement en cas d&apos;arrêt
+              sont en cours de finalisation.
             </p>
           </div>
 
@@ -96,26 +96,26 @@ export default function CgvPage() {
           <div>
             <h2 className="mb-2 text-base font-semibold text-ink">7. Droit de rétractation</h2>
             <p>
-              [TODO(client) — voir la note en tête de fichier : à faire trancher par un professionnel du droit.
-              L&apos;applicabilité d&apos;un droit de rétractation de 14 jours dépend de la qualification exacte du
-              client (particulier ou professionnel) et, pour un professionnel, du lien entre la prestation commandée
-              et son activité principale.]
+              L&apos;applicabilité d&apos;un droit de rétractation dépend de la qualification exacte du client
+              (particulier ou professionnel) et, pour un professionnel, du lien entre la prestation commandée et son
+              activité principale. Ce point est en cours de validation avec un professionnel du droit et sera
+              précisé avant tout premier contrat signé.
             </p>
           </div>
 
           <div>
             <h2 className="mb-2 text-base font-semibold text-ink">8. Responsabilité</h2>
             <p>
-              [TODO(client) : clause de limitation de responsabilité à rédiger avec un professionnel du droit —
-              notamment en cas d&apos;indisponibilité de l&apos;hébergeur tiers ou de contenu fourni par le client.]
+              La clause de limitation de responsabilité (notamment en cas d&apos;indisponibilité de l&apos;hébergeur
+              tiers ou de contenu fourni par le client) est en cours de rédaction avec un professionnel du droit.
             </p>
           </div>
 
           <div>
             <h2 className="mb-2 text-base font-semibold text-ink">9. Droit applicable et litiges</h2>
             <p>
-              [TODO(client) : droit applicable et juridiction compétente, à préciser avec la forme juridique
-              définitive de {siteConfig.legalName}.]
+              Le droit applicable et la juridiction compétente seront précisés une fois la forme juridique
+              définitive de {siteConfig.legalName} arrêtée.
             </p>
           </div>
 

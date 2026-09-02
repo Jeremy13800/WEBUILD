@@ -55,11 +55,11 @@ export default function PolitiqueConfidentialitePage() {
 
           <div>
             <h2 className="mb-2 text-base font-semibold text-ink">Cookies</h2>
-            <p>
-              Ce site n&apos;utilise actuellement aucun cookie de suivi ou de mesure d&apos;audience.
-              [TODO(client) : mettre à jour cette section si un outil d&apos;analytics (Google Analytics, Plausible…)
-              est ajouté — un bandeau de consentement sera alors nécessaire.]
-            </p>
+            {/* TODO(client) : mettre à jour ce paragraphe si un outil d'analytics
+                (Google Analytics, Plausible…) est ajouté un jour — un bandeau de
+                consentement sera alors nécessaire. Vrai et complet tel quel tant
+                qu'aucun outil de suivi n'est en place. */}
+            <p>Ce site n&apos;utilise actuellement aucun cookie de suivi ou de mesure d&apos;audience.</p>
           </div>
         </div>
       </Container>

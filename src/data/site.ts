@@ -16,6 +16,16 @@ export const siteConfig = {
   positioning:
     "Création de sites internet sur mesure pour les artisans et entreprises du bâtiment.",
 
+  // Identité de la personne derrière WeBuild — activité solo (pas d'équipe,
+  // jamais de "nous" impliquant plusieurs personnes). Source unique pour
+  // /a-propos, about-teaser.tsx et les mentions légales (directeur de
+  // publication), plutôt que ce nom en dur à plusieurs endroits.
+  founder: {
+    name: "Jérémy Cailleux",
+    role: "Développeur et fondateur de WeBuild",
+    location: "Istres, Bouches-du-Rhône",
+  },
+
   // TODO(client) : nom de domaine définitif — placeholder tant qu'aucun
   // domaine n'est réellement possédé/réservé. Piloté par une variable
   // d'env plutôt qu'en dur : tant que webuild.fr n'est pas branché, les
