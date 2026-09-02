@@ -18,7 +18,7 @@ npm run dev
 
 Tout le contenu commercial est centralisé dans `src/data/` :
 
-- `site.ts` — nom, coordonnées, navigation, positionnement.
+- `site.ts` — nom, coordonnées, identité du fondateur (`founder`), navigation, positionnement.
 - `pricing.ts` — offres, tarifs et formule de maintenance (facilement modifiables).
 - `projects.ts` — réalisations du portfolio.
 - `faq.ts` — questions fréquentes.
@@ -30,24 +30,34 @@ composants : ils lisent tous ces fichiers.
 
 ## Formulaire de contact
 
-Le formulaire (`/contact`) fonctionne dès aujourd'hui via un repli
-`mailto:`, sans configuration. Pour activer l'envoi silencieux côté
-serveur (email direct, sans ouvrir le client mail du visiteur), copiez
-`.env.example` en `.env.local` et renseignez `RESEND_API_KEY` (voir
-[resend.com](https://resend.com/api-keys)) — détails dans
-`src/app/api/contact/route.ts`.
+Le formulaire (`/contact`) fonctionne via un repli `mailto:` sans
+configuration, ou via un envoi direct (Resend) une fois `RESEND_API_KEY`
+renseignée — copiez `.env.example` en `.env.local` (voir
+[resend.com/api-keys](https://resend.com/api-keys)), détails dans
+`src/app/api/contact/route.ts`. Envoi direct testé et fonctionnel en
+production comme en local.
 
 ## Pages légales
 
-`/mentions-legales`, `/politique-de-confidentialite` et `/cgv` suivent
-toutes le même principe : le contenu vérifiable est déjà rempli, le reste
-est marqué `[TODO(client)]` plutôt qu'inventé. Aucune des trois ne doit
-être mise en ligne sans relecture par un professionnel du droit — en
-particulier les CGV (droit de rétractation, responsabilité, juridiction).
+`/mentions-legales`, `/politique-de-confidentialite` et `/cgv` affichent
+tout ce qui est déjà vérifiable (identité, hébergeur réel) ; le reste
+(forme juridique, SIRET, adresse du siège, clauses CGV sensibles) est
+formulé comme "en cours de finalisation" plutôt qu'inventé ou laissé en
+`TODO(client)` brut. Aucune des trois ne doit être considérée définitive
+sans relecture par un professionnel du droit — en particulier les CGV
+(droit de rétractation, responsabilité, juridiction).
 
-## À faire avant mise en ligne
+## Indexation par les moteurs de recherche
 
-Cherchez `TODO(client)` dans le code : ce sont les informations réelles
-(nom de domaine définitif, email définitif, éventuel téléphone, réseaux
-sociaux, mentions légales, CGV, captures d'écran des réalisations,
-photographie professionnelle) qui restent à fournir.
+Bloquée par défaut (`robots.ts`) tant que `NEXT_PUBLIC_SITE_READY` n'est
+pas explicitement à `"true"` dans les variables d'env Vercel — sécurité
+volontaire pour ne pas indexer une version encore incomplète. À activer
+seulement une fois le domaine définitif branché et les pages légales
+complétées.
+
+## À faire avant mise en ligne définitive
+
+Cherchez `TODO(client)` dans le code : nom de domaine définitif (piloté
+par `NEXT_PUBLIC_SITE_URL`), email professionnel à confirmer, éventuel
+téléphone, réseaux sociaux, forme juridique/SIRET pour les mentions
+légales et les CGV, captures d'écran des réalisations.
