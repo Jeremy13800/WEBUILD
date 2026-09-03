@@ -8,9 +8,10 @@ import type { Project } from "@/types";
  * commercial). À repasser en "client" au cas par cas une fois confirmé.
  *
  * `palette` reprend fidèlement les tokens CSS réels de chaque projet — elle
- * sert aux mockups tant que les vraies captures d'écran ne sont pas
- * disponibles (voir components/mockups). Remplacer par de vraies images
- * dès qu'elles existent : la structure de la carte ne changera pas.
+ * sert de fallback aux mockups pour un projet qui n'a pas encore de vraie
+ * capture d'écran (voir components/mockups). Dès qu'un projet a un
+ * `screenshots`, BrowserFrame/PhoneFrame affichent la vraie capture à la
+ * place de l'aperçu simulé — la structure de la carte ne change pas.
  *
  * Pour ajouter un projet : ajouter une entrée ici, rien d'autre à toucher.
  */
@@ -44,11 +45,18 @@ export const projects: Project[] = [
       accent: { color: "#0f4c81", label: "Bleu marine" },
     },
     typeStyle: "sans-bold",
+    liveUrl: "https://le-plombier-istreen.vercel.app/",
+    screenshots: {
+      desktop: "/projects/le-plombier-istreen/desktop.webp",
+      mobile: "/projects/le-plombier-istreen/mobile.webp",
+      desktopWidth: 1400,
+      desktopHeight: 620,
+    },
   },
   {
     slug: "bk-plomberie",
     name: "BK+ Plomberie",
-    metier: "Plomberie · Chauffage · Climatisation",
+    metier: "Plomberie · Chauffage",
     ville: "Istres",
     status: "concept",
     summary: "Une équipe de quatre professionnels, un site aussi structuré que leur organisation.",
@@ -74,6 +82,13 @@ export const projects: Project[] = [
       accent: { color: "#c1560f", label: "Ambre signal" },
     },
     typeStyle: "serif",
+    liveUrl: "https://bk-plomberie.vercel.app/",
+    screenshots: {
+      desktop: "/projects/bk-plomberie/desktop.webp",
+      mobile: "/projects/bk-plomberie/mobile.webp",
+      desktopWidth: 1400,
+      desktopHeight: 716,
+    },
   },
   {
     slug: "daiselec",
@@ -93,7 +108,7 @@ export const projects: Project[] = [
     resultat:
       "Un site honnête, structuré autour des prestations réellement attestées par les avis clients, prêt à évoluer dès que de nouvelles informations sont confirmées.",
     caracteristiques: [
-      "Aucune donnée inventée — tout est vérifié ou explicitement en attente",
+      "Prise de contact accessible dès le premier écran",
       "Structure orientée dépannage et mise aux normes",
       "Note Google mise en avant",
       "Base solide pour un futur enrichissement",
@@ -104,6 +119,13 @@ export const projects: Project[] = [
       accent: { color: "#a9652f", label: "Cuivre" },
     },
     typeStyle: "sans-condensed",
+    liveUrl: "https://daiselec.vercel.app/",
+    screenshots: {
+      desktop: "/projects/daiselec/desktop.webp",
+      mobile: "/projects/daiselec/mobile.webp",
+      desktopWidth: 1400,
+      desktopHeight: 751,
+    },
   },
 ];
 

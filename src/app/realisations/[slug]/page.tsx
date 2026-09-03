@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react";
 import { projects, getProjectBySlug } from "@/data/projects";
 import { siteConfig } from "@/data/site";
 import { Container } from "@/components/ui/container";
@@ -90,7 +90,9 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
               </Reveal>
               <Reveal delay={0.15} className="mt-6 flex flex-wrap gap-2">
                 {project.status === "concept" && (
-                  <Badge className="border-white/15 bg-white/5 text-sand">Projet concept</Badge>
+                  <Badge className="border-clay-500/40 bg-clay-500/10 font-semibold text-clay-300">
+                    Projet concept
+                  </Badge>
                 )}
                 {project.caracteristiques.slice(0, 2).map((c) => (
                   <Badge key={c} className="border-white/15 bg-white/5 text-sand">
@@ -98,18 +100,28 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                   </Badge>
                 ))}
               </Reveal>
+              {project.liveUrl && (
+                <Reveal delay={0.2} className="mt-7">
+                  <ButtonLink href={project.liveUrl} target="_blank" rel="noopener noreferrer" variant="secondary">
+                    Visiter la démo
+                    <ArrowUpRight className="size-4" strokeWidth={2.5} />
+                  </ButtonLink>
+                </Reveal>
+              )}
             </div>
           </div>
         </Container>
       </section>
 
+      {/* Grande capture desktop — le vrai site est la vedette de cette page
+          (brief : "voir le projet" doit vraiment montrer le projet). Pas de
+          Tilt/rotation ici, volontairement : cet effet reste réservé à la
+          composition desktop + mobile plus bas, pour ne pas complexifier le
+          tout premier visuel que découvre le visiteur. */}
       <section className="bg-paper pt-0">
         <Container className="-mt-14 sm:-mt-16">
           <Reveal>
-            <Tilt className="relative pb-[6%]">
-              <BrowserFrame project={project} />
-              <PhoneFrame project={project} className="absolute -bottom-4 right-[8%] hidden w-[22%] sm:block" />
-            </Tilt>
+            <BrowserFrame project={project} className="mx-auto w-full" priority />
           </Reveal>
         </Container>
       </section>
@@ -148,7 +160,23 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
         </Container>
       </section>
 
-      <section className="border-t border-line bg-paper-dim py-16">
+      {/* Desktop + mobile — preuve que le site n'est pas pensé que pour
+          grand écran (brief : montrer explicitement les deux formats). */}
+      <section className="border-t border-line bg-paper-dim py-24 sm:py-32">
+        <Container>
+          <Reveal>
+            <Kicker>Sur tous les écrans</Kicker>
+          </Reveal>
+          <Reveal delay={0.05} className="mt-10">
+            <Tilt className="relative pb-[6%]">
+              <BrowserFrame project={project} className="max-w-3xl" />
+              <PhoneFrame project={project} className="absolute -bottom-4 right-[8%] hidden w-[19%] sm:block" />
+            </Tilt>
+          </Reveal>
+        </Container>
+      </section>
+
+      <section className="border-t border-line bg-paper py-16">
         <Container className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
           <Link
             href={`/realisations/${next.slug}`}

@@ -24,23 +24,46 @@ export function PortfolioPreview() {
     <section id="realisations" className="bg-paper py-24 sm:py-32">
       <Container>
         <div className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
-          <SectionHeading
-            kicker="Réalisations"
-            title="Voir avant de croire."
-            subtitle="Des projets réels, conçus pour des artisans du bâtiment. Aucun résultat inventé — le travail parle de lui-même."
-          />
+          <div className="flex flex-col gap-3">
+            <SectionHeading
+              kicker="Projets & concepts"
+              title="Voir avant de croire."
+              subtitle="Des concepts imaginés pour montrer concrètement comment WeBuild peut transformer la présence en ligne d'un artisan."
+            />
+            {/* Note éditoriale de transparence — rattachée à l'intro (même
+                colonne, gap-3 serré) plutôt qu'isolée en dessous : elle se
+                lit comme la suite naturelle du propos, pas comme une
+                mention légale flottante. Toujours discrète (text-sm, ton
+                atténué), jamais un warning. */}
+            <p className="max-w-xl text-sm text-ink-faint">
+              Ces projets sont des démonstrations non commanditées et n&apos;impliquent aucune collaboration
+              commerciale avec les entreprises présentées.
+            </p>
+          </div>
           <ButtonLink href="/realisations" variant="secondary-light" className="hidden shrink-0 sm:inline-flex">
             Toutes les réalisations
             <ArrowRight className="size-4" strokeWidth={2.5} />
           </ButtonLink>
         </div>
 
-        <div className="mt-16 flex flex-col gap-24">
+        <div className="mt-16 flex flex-col gap-21">
           {projects.map((project, i) => (
             <div
               key={project.slug}
               className={cn(
-                "grid grid-cols-1 items-center gap-10 lg:grid-cols-2 lg:gap-16",
+                "grid grid-cols-1 items-center gap-10 lg:gap-16",
+                // BK+ Plomberie est la ligne "inversée" (i impair) : son
+                // premier enfant (le visuel) passe en `order-2`, donc le
+                // visuel se retrouve rendu dans la DEUXIÈME piste du grid,
+                // pas la première. `grid-template-columns` dimensionne les
+                // pistes par POSITION, pas par contenu réordonné — la
+                // valeur la plus grande doit donc être placée en second
+                // pour cette ligne précisément, sinon c'est le texte (resté
+                // en première position) qui hérite du grand espace. C'était
+                // le bug réel derrière "BK+ paraît plus petit" : Le
+                // Plombier Istréen et Daiselec (lignes non inversées)
+                // gardent leur ratio de référence, inchangé.
+                project.slug === "bk-plomberie" ? "lg:grid-cols-[1fr_2.15fr]" : "lg:grid-cols-[1.6fr_1fr]",
                 i % 2 === 1 && "lg:[&>*:first-child]:order-2",
               )}
             >
@@ -56,7 +79,7 @@ export function PortfolioPreview() {
                       className="block transition-shadow duration-300 hover:drop-shadow-[0_28px_44px_rgba(28,23,18,0.16)]"
                     >
                       <BrowserFrame project={project} className={cn(i % 2 === 0 ? "lg:-rotate-1" : "lg:rotate-1")} />
-                      <PhoneFrame project={project} className="absolute -bottom-2 right-[8%] hidden w-[24%] sm:block" />
+                      <PhoneFrame project={project} className="absolute -bottom-2 right-[8%] hidden w-[21%] sm:block" />
                     </Link>
                   </Tilt>
                 </HoverTag>
@@ -66,7 +89,9 @@ export function PortfolioPreview() {
                 <div className="flex items-center gap-2">
                   <Badge>{project.metier}</Badge>
                   <Badge>{project.ville}</Badge>
-                  {project.status === "concept" && <Badge>Projet concept</Badge>}
+                  {project.status === "concept" && (
+                    <Badge className="border-clay-200 bg-clay-50 font-semibold text-clay-700">Projet concept</Badge>
+                  )}
                 </div>
                 <h3 className="font-[family-name:var(--font-display)] text-3xl font-normal text-ink sm:text-4xl">
                   {project.name}

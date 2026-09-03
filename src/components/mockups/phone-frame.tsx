@@ -1,10 +1,14 @@
+import Image from "next/image";
 import type { Project } from "@/types";
 import { cn } from "@/lib/utils";
 
-/** Aperçu "mobile" d'un projet — même logique que BrowserFrame, format vertical,
- * mêmes hauteurs fixes pour la même raison (voir BrowserFrame). */
+/** Aperçu "mobile" d'un projet — même logique que BrowserFrame : si
+ * `project.screenshots.mobile` existe, affiche la vraie capture mobile du
+ * site ; sinon retombe sur l'aperçu simulé (mêmes hauteurs fixes, même
+ * raison — voir BrowserFrame). */
 export function PhoneFrame({ project, className }: { project: Project; className?: string }) {
   const { fond, fondSombre, accent } = project.palette;
+  const shot = project.screenshots?.mobile;
 
   return (
     <div
@@ -14,6 +18,17 @@ export function PhoneFrame({ project, className }: { project: Project; className
       )}
       style={{ backgroundColor: fond.color }}
     >
+      {shot ? (
+        <div className="relative aspect-[9/18.5] w-full overflow-hidden">
+          <Image
+            src={shot}
+            alt={`Version mobile du site ${project.name}`}
+            fill
+            sizes="24vw"
+            className="object-cover object-top"
+          />
+        </div>
+      ) : (
       <div className="aspect-[9/18.5] w-full">
         <div className="flex items-center justify-between px-[10%] pt-[8%]">
           <div className="h-2 w-[26%] rounded-sm" style={{ backgroundColor: fondSombre.color, opacity: 0.85 }} />
@@ -32,6 +47,7 @@ export function PhoneFrame({ project, className }: { project: Project; className
           <div className="mt-1.5 h-5 w-[62%] rounded-full" style={{ backgroundColor: accent.color }} />
         </div>
       </div>
+      )}
     </div>
   );
 }
