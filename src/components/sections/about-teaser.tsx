@@ -7,14 +7,16 @@ import { Reveal } from "@/components/motion/reveal";
 import { Tilt } from "@/components/motion/tilt";
 
 /**
- * Section humaine (brief §19) : le visiteur doit sentir qu'il parle à une
- * vraie personne, pas à une agence anonyme.
+ * Section "Notre histoire" — construit LA MARQUE, pas la personne. La
+ * homepage raconte pourquoi WeBuild existe ; /a-propos va plus loin et
+ * révèle ensuite qui est derrière (voir la section dédiée sur cette page).
+ * Distinction volontaire : mélanger les deux ici dilue le "reveal" plus
+ * personnel de /a-propos.
  *
  * Volontairement sans photo (choix assumé, pas un manque) : le panneau
  * sombre reste un élément graphique abstrait (monogramme + repères), sans
  * aucune mention "à venir" qui donnerait une impression d'inachevé — voir
- * la même logique sur /a-propos. L'identité réelle (nom/rôle/ville) est
- * portée par la typographie dans la colonne de texte, pas par un portrait.
+ * la même logique sur /a-propos.
  *
  * Même traitement que le panneau équivalent sur /a-propos (Tilt, lueur) —
  * cette variante homepage ne doit pas avoir l'air d'une version au rabais.
@@ -65,29 +67,27 @@ export function AboutTeaser() {
 
         <div className="order-1 flex flex-col items-start gap-6 lg:order-2">
           <SectionHeading
-            kicker="Qui se cache derrière WeBuild"
-            title="Une personne qui comprend les petites entreprises."
-            subtitle="Pas une agence anonyme avec un chargé de compte différent à chaque appel : vous échangez directement avec la personne qui conçoit votre site, du premier échange à la mise en ligne."
+            kicker="Notre histoire"
+            title="WeBuild est né d'un constat simple."
+            subtitle="Les artisans consacrent leur énergie à leur métier, leurs chantiers et leurs clients. Pourtant, leur présence en ligne ne reflète pas toujours la qualité de leur travail."
           />
-          {/* Signature — répond directement à la question posée par le
-              kicker. Trait cuivre + typographie plutôt qu'une carte : reste
-              éditorial, pas une carte de visite. */}
-          <div className="flex items-center gap-3">
-            <span className="h-px w-8 shrink-0 bg-clay-500" aria-hidden />
-            <p className="text-sm">
-              <span className="font-[family-name:var(--font-display)] text-lg font-normal text-ink">
-                {siteConfig.founder.name}
-              </span>
-              <span className="text-ink-faint"> — {siteConfig.founder.role}</span>
+          <p className="max-w-lg text-sm leading-relaxed text-ink-soft">
+            WeBuild est né pour réduire ce décalage : créer des sites clairs, modernes et efficaces, pensés pour
+            mettre en valeur le savoir-faire des entreprises du bâtiment et faciliter le contact avec leurs futurs
+            clients.
+          </p>
+          {/* Phrase signature de marque (pas une signature personnelle ici
+              — celle-ci vit sur /a-propos, dans la section qui révèle qui
+              se cache derrière WeBuild). Même trait cuivre que l'ancienne
+              version, réutilisé pour introduire la phrase plutôt qu'un nom. */}
+          <div className="flex items-start gap-3">
+            <span className="mt-2.5 h-px w-8 shrink-0 bg-clay-500" aria-hidden />
+            <p className="max-w-md font-[family-name:var(--font-display)] text-xl leading-snug font-normal text-ink">
+              Votre métier mérite d&apos;être aussi bien présenté en ligne que sur le terrain.
             </p>
           </div>
-          <p className="max-w-lg text-sm leading-relaxed text-ink-soft">
-            Je me suis spécialisé dans les sites web pour artisans parce que ce sont des entreprises qui font un
-            travail exigeant, souvent sans le temps ni les outils pour le montrer correctement en ligne. Mon rôle :
-            vous rendre ce temps, avec un site qui représente vraiment la qualité de ce que vous livrez.
-          </p>
           <ButtonLink href="/a-propos" variant="secondary-light">
-            En savoir plus sur WeBuild
+            Découvrir l&apos;histoire de WeBuild
             <ArrowRight className="size-4" strokeWidth={2.5} />
           </ButtonLink>
         </div>
