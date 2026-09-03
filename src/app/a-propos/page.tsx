@@ -8,6 +8,15 @@ import { SplitText } from "@/components/motion/split-text";
 import { BlueprintMarks } from "@/components/motion/blueprint-marks";
 import { Tilt } from "@/components/motion/tilt";
 
+/**
+ * Architecture narrative en deux temps (voulue explicitement) :
+ * 1. WeBuild — pourquoi le projet existe, sa philosophie (hero + "Ma façon
+ *    de travailler"), à la troisième personne / voix de marque.
+ * 2. La personne derrière WeBuild — Jérémy Cailleux, révélé seulement à ce
+ *    stade, à la première personne. Ne pas fusionner les deux : le "reveal"
+ *    perd son effet si le nom apparaît déjà dans le hero.
+ */
+
 export const metadata: Metadata = {
   title: "À propos",
   description: `${siteConfig.name} conçoit des sites internet pour les artisans du bâtiment, avec une approche personnalisée et une vraie compréhension des petites entreprises.`,
@@ -60,30 +69,19 @@ export default function AProposPage() {
             <h1 className="mt-5 font-[family-name:var(--font-display)] text-4xl leading-[1.1] font-normal tracking-[-0.01em] sm:text-5xl">
               <SplitText trigger="mount" delay={0.05} segments={[{ text: "Le web, avec le même soin que votre métier." }]} />
             </h1>
-            {/* Signature — identique à la version homepage (about-teaser.tsx). */}
-            <Reveal delay={0.08} className="mt-5 flex items-center gap-3">
-              <span className="h-px w-8 shrink-0 bg-clay-500" aria-hidden />
-              <p className="text-sm">
-                <span className="font-[family-name:var(--font-display)] text-lg font-normal text-white">
-                  {siteConfig.founder.name}
-                </span>
-                <span className="text-sand-faint">
-                  {" "}
-                  — {siteConfig.founder.role} · {siteConfig.founder.location}
-                </span>
-              </p>
-            </Reveal>
+            {/* Voix "marque" (WeBuild), pas encore personnelle — Jérémy est
+                révélé plus bas, dans la section "Derrière WeBuild". */}
             <Reveal delay={0.1}>
               <p className="mt-6 max-w-lg text-lg leading-relaxed text-sand">
-                Je me suis spécialisé dans la création de sites internet pour les artisans du bâtiment parce que ce
-                sont des entreprises qui font un travail exigeant, souvent sans le temps ni les outils pour le
-                montrer correctement en ligne.
+                WeBuild est né d&apos;un constat simple : les artisans du bâtiment font un travail exigeant, souvent
+                sans le temps ni les outils pour le montrer correctement en ligne.
               </p>
             </Reveal>
             <Reveal delay={0.15}>
               <p className="mt-4 max-w-lg text-base leading-relaxed text-sand-faint">
-                Mon rôle est simple : comprendre votre activité, et construire un site qui représente vraiment la
-                qualité de ce que vous livrez sur le terrain — sans jargon technique, sans complexité inutile.
+                L&apos;idée : proposer des sites clairs, modernes et efficaces, pensés pour mettre en valeur ce
+                savoir-faire et faciliter le contact avec de futurs clients — sans jargon technique, sans
+                complexité inutile.
               </p>
             </Reveal>
           </div>
@@ -116,7 +114,64 @@ export default function AProposPage() {
         </Container>
       </section>
 
-      <section className="border-t border-line bg-paper-dim py-20 text-center">
+      {/* PARTIE 2 — la personne derrière WeBuild, révélée seulement ici.
+          Message central : quand un artisan travaille avec WeBuild, il
+          travaille directement avec la personne qui conçoit son site —
+          pas de commercial, pas de chef de projet intermédiaire. Toujours
+          sans photo (même logique qu'ailleurs) : un monogramme "W" géant en
+          filigrane (même langage que le "?" de la FAQ) apporte de la
+          personnalité graphique sans portrait. */}
+      <section className="relative overflow-hidden border-t border-line bg-paper-dim py-24 sm:py-32">
+        <span
+          className="pointer-events-none absolute -right-6 -bottom-16 font-[family-name:var(--font-display)] text-[16rem] leading-none font-normal text-clay-600/[0.06] italic select-none"
+          aria-hidden
+        >
+          W
+        </span>
+        <Container className="relative grid grid-cols-1 items-start gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+          <div>
+            <Reveal>
+              <Kicker>Derrière WeBuild</Kicker>
+            </Reveal>
+            <h2 className="mt-4 max-w-md font-[family-name:var(--font-display)] text-2xl font-normal text-ink sm:text-3xl">
+              <SplitText
+                trigger="inView"
+                segments={[{ text: "Un interlocuteur, du premier échange à la mise en ligne." }]}
+              />
+            </h2>
+          </div>
+
+          <div className="flex flex-col items-start gap-6">
+            <Reveal className="flex flex-col gap-4 text-base leading-relaxed text-ink-soft">
+              <p>
+                Derrière WeBuild, il y a {siteConfig.founder.name}, développeur web et fondateur du projet, qui
+                imagine et conçoit chaque site avec la même exigence : mettre le savoir-faire des artisans
+                réellement en valeur.
+              </p>
+              <p>
+                J&apos;ai créé WeBuild avec une idée simple : proposer aux artisans des sites professionnels sans
+                les faire passer par une agence impersonnelle ou des solutions compliquées.
+              </p>
+              <p>
+                Du premier échange à la mise en ligne, vous échangez directement avec moi. Je conçois le site,
+                j&apos;intègre vos contenus et je reste votre interlocuteur pour la suite.
+              </p>
+            </Reveal>
+
+            <Reveal delay={0.05} className="flex items-center gap-3">
+              <span className="h-px w-8 shrink-0 bg-clay-500" aria-hidden />
+              <p className="text-sm">
+                <span className="font-[family-name:var(--font-display)] text-lg font-normal text-ink">
+                  {siteConfig.founder.name}
+                </span>
+                <span className="text-ink-faint"> — {siteConfig.founder.role}</span>
+              </p>
+            </Reveal>
+          </div>
+        </Container>
+      </section>
+
+      <section className="border-t border-line bg-paper py-20 text-center">
         <Container className="flex flex-col items-center gap-5">
           <h2 className="font-[family-name:var(--font-display)] text-2xl font-normal text-ink sm:text-3xl">
             <SplitText trigger="inView" segments={[{ text: "Envie d'échanger sur votre projet ?" }]} />
