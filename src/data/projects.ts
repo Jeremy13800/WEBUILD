@@ -45,6 +45,7 @@ export const projects: Project[] = [
       accent: { color: "#0f4c81", label: "Bleu marine" },
     },
     typeStyle: "sans-bold",
+    showcaseTitle: "Pensé pour rassurer avant même le premier appel.",
     liveUrl: "https://le-plombier-istreen.vercel.app/",
     screenshots: {
       desktop: "/projects/le-plombier-istreen/desktop.webp",
@@ -82,6 +83,7 @@ export const projects: Project[] = [
       accent: { color: "#c1560f", label: "Ambre signal" },
     },
     typeStyle: "serif",
+    showcaseTitle: "Pensé pour transmettre, dès le premier écran, la même impression de sérieux que sur le terrain.",
     liveUrl: "https://bk-plomberie.vercel.app/",
     screenshots: {
       desktop: "/projects/bk-plomberie/desktop.webp",
@@ -119,6 +121,7 @@ export const projects: Project[] = [
       accent: { color: "#a9652f", label: "Cuivre" },
     },
     typeStyle: "sans-condensed",
+    showcaseTitle: "Pensé pour rester honnête, écran après écran.",
     liveUrl: "https://daiselec.vercel.app/",
     screenshots: {
       desktop: "/projects/daiselec/desktop.webp",
