@@ -38,6 +38,13 @@ export interface Project {
   /** URL réelle si le site est en ligne et confirmé publiable ; sinon undefined. */
   liveUrl?: string;
   /**
+   * Courte phrase éditoriale affichée au-dessus de la grande capture du
+   * site sur la page projet (case study) — adaptée à chaque projet, jamais
+   * dupliquée telle quelle. Optionnel : n'est utilisé que par la nouvelle
+   * mise en page case study (voir realisations/[slug]/page.tsx).
+   */
+  showcaseTitle?: string;
+  /**
    * Vraies captures d'écran du site (desktop + mobile). Quand elles sont
    * présentes, BrowserFrame/PhoneFrame les affichent à la place de l'aperçu
    * simulé en CSS (qui reste le fallback tant qu'un projet n'a pas encore
