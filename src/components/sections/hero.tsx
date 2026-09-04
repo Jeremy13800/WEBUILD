@@ -20,7 +20,12 @@ import {
   Zap,
   type LucideIcon,
 } from "lucide-react";
-import { motion, useMotionTemplate, useMotionValue, useReducedMotion } from "framer-motion";
+import {
+  motion,
+  useMotionTemplate,
+  useMotionValue,
+  useReducedMotion,
+} from "framer-motion";
 import { siteConfig } from "@/data/site";
 import { Container, wideContainer } from "@/components/ui/container";
 import { ButtonLink } from "@/components/ui/button";
@@ -174,7 +179,9 @@ export function Hero() {
         aria-hidden
       />
 
-      <Container className={`${wideContainer} relative flex flex-1 items-center py-5 lg:py-6`}>
+      <Container
+        className={`${wideContainer} relative flex flex-1 items-center py-5 lg:py-6`}
+      >
         {/* Toute la colonne (titre/texte/CTA/arguments) reste au ras du
             dégradé de lisibilité (max-w-2xl) : le téléphone de la photo est
             maintenant nettement plus visible (voir le zoom sur l'<Image>
@@ -194,15 +201,19 @@ export function Hero() {
               <SplitText
                 trigger="mount"
                 delay={0.05}
-                segments={[{ text: "Un site qui travaille autant" }, { text: "que vous.", className: "text-clay-500" }]}
+                segments={[
+                  { text: "Un site qui travaille autant" },
+                  { text: "que vous.", className: "text-clay-500" },
+                ]}
               />
             </h1>
 
             <Reveal delay={0.35}>
               <p className="max-w-xl text-xl leading-relaxed text-sand sm:text-2xl">
-                Des sites internet sur-mesure pour les artisans du bâtiment — clairs, rapides et pensés pour
-                transformer vos visiteurs en <span className="font-semibold text-clay-400">appels</span> et en{" "}
-                <span className="font-semibold text-clay-400">devis</span>.
+                Des sites internet sur-mesure pour les artisans — clairs,
+                rapides et pensés pour transformer vos visiteurs en{" "}
+                <span className="font-semibold text-clay-400">appels</span> et
+                en <span className="font-semibold text-clay-400">devis</span>.
               </p>
             </Reveal>
 
@@ -253,13 +264,18 @@ export function Hero() {
 
           {/* Mini-section de réassurance — volontairement détachée de la
               colonne étroite ci-dessus pour avoir la place de s'étaler. */}
-          <Reveal delay={0.45} className="flex w-full flex-wrap gap-x-10 gap-y-5 pt-1">
+          <Reveal
+            delay={0.45}
+            className="flex w-full flex-wrap gap-x-10 gap-y-5 pt-1"
+          >
             {heroBenefits.map((b) => (
               <div key={b.label} className="flex shrink-0 items-center gap-4">
                 <span className="grid size-14 shrink-0 place-items-center rounded-full border border-white/15 bg-white/5 text-clay-400">
                   <b.icon className="size-6" strokeWidth={1.75} />
                 </span>
-                <span className="text-lg font-medium whitespace-nowrap text-sand">{b.label}</span>
+                <span className="text-lg font-medium whitespace-nowrap text-sand">
+                  {b.label}
+                </span>
               </div>
             ))}
           </Reveal>
@@ -283,22 +299,35 @@ export function Hero() {
           <Reveal delay={0.5}>
             <div className="flex flex-col gap-5 rounded-2xl border border-white/10 bg-ink-900/50 px-7 py-6 shadow-[var(--shadow-lg)] backdrop-blur-md sm:flex-row sm:items-center sm:gap-10 sm:px-10 lg:py-7 min-[1416px]:py-8!">
               <span className="shrink-0 text-base leading-tight font-bold tracking-tight text-white uppercase sm:text-lg">
-                Au service des
-                <br />
-                artisans du bâtiment
+                Au service des artisans
               </span>
-              <div className="hidden h-12 w-px shrink-0 bg-white/10 sm:block" aria-hidden />
+              <div
+                className="hidden h-12 w-px shrink-0 bg-white/10 sm:block"
+                aria-hidden
+              />
               <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
                 {shownMetiers.map((metier) => {
                   const Icon = metierIcons[metier];
                   return (
-                    <span key={metier} className="flex items-center gap-2.5 text-base text-sand">
-                      {Icon && <Icon className="size-5 text-clay-400" strokeWidth={1.75} />}
+                    <span
+                      key={metier}
+                      className="flex items-center gap-2.5 text-base text-sand"
+                    >
+                      {Icon && (
+                        <Icon
+                          className="size-5 text-clay-400"
+                          strokeWidth={1.75}
+                        />
+                      )}
                       {metier}
                     </span>
                   );
                 })}
-                {hasMoreMetiers && <span className="text-base font-medium text-clay-400">&amp; plus encore</span>}
+                {hasMoreMetiers && (
+                  <span className="text-base font-medium text-clay-400">
+                    &amp; plus encore
+                  </span>
+                )}
               </div>
             </div>
           </Reveal>

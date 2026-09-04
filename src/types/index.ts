@@ -37,6 +37,24 @@ export interface Project {
   typeStyle: "serif" | "sans-condensed" | "sans-bold";
   /** URL réelle si le site est en ligne et confirmé publiable ; sinon undefined. */
   liveUrl?: string;
+  /**
+   * Vraies captures d'écran du site (desktop + mobile). Quand elles sont
+   * présentes, BrowserFrame/PhoneFrame les affichent à la place de l'aperçu
+   * simulé en CSS (qui reste le fallback tant qu'un projet n'a pas encore
+   * de capture — voir components/mockups). Chemins vers /public.
+   */
+  screenshots?: {
+    desktop: string;
+    mobile: string;
+    /**
+     * Dimensions réelles du fichier desktop (px). Le cadre du mockup
+     * adopte exactement ce ratio (voir BrowserFrame) — jamais de crop du
+     * Hero, jamais de déformation : le ratio original est toujours
+     * respecté, quel que soit le conteneur qui l'accueille.
+     */
+    desktopWidth: number;
+    desktopHeight: number;
+  };
 }
 
 export interface PricingFeature {
