@@ -54,13 +54,15 @@ export interface Project {
     desktop: string;
     mobile: string;
     /**
-     * Dimensions réelles du fichier desktop (px). Le cadre du mockup
-     * adopte exactement ce ratio (voir BrowserFrame) — jamais de crop du
-     * Hero, jamais de déformation : le ratio original est toujours
-     * respecté, quel que soit le conteneur qui l'accueille.
+     * Dimensions réelles des fichiers desktop et mobile (px). Le cadre du
+     * mockup adopte exactement ce ratio (voir BrowserFrame/PhoneFrame) —
+     * jamais de crop du Hero, jamais de déformation : le ratio original est
+     * toujours respecté, quel que soit le conteneur qui l'accueille.
      */
     desktopWidth: number;
     desktopHeight: number;
+    mobileWidth: number;
+    mobileHeight: number;
   };
 }
 

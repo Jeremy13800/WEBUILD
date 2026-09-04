@@ -34,172 +34,24 @@ export async function generateMetadata({
   };
 }
 
-const stages = (project: Project) => [
-  { label: "Problème", text: project.probleme },
-  { label: "Approche", text: project.approche },
-  { label: "Design", text: project.design },
-  { label: "Résultat", text: project.resultat },
-];
-
 /**
  * Labels éditoriaux des 4 points "Design & UX" de CaseStudyLayout — génériques
- * plutôt que spécifiques à un projet, pour rester utilisables tels quels une
- * fois cette direction répliquée aux deux autres pages.
+ * plutôt que spécifiques à un projet, pour rester utilisables sur les trois
+ * projets sans réécriture.
  */
 const uxLabels = ["Conversion", "Réassurance", "Preuve", "Local"];
 
 /**
- * Ancienne mise en page "fiche projet" — conservée à l'identique pour Le
- * Plombier Istréen et Daiselec tant que la nouvelle direction "case study"
- * (voir CaseStudyLayout ci-dessous) n'a pas été validée sur les trois
- * projets. Ne pas modifier sans raison : c'est le comportement de
- * référence, pas un brouillon.
- */
-function LegacyLayout({ project, next }: { project: Project; next: Project }) {
-  return (
-    <>
-      <section className="grain relative -mt-18 overflow-hidden bg-ink-950 pt-24 pb-24 text-white sm:pt-28">
-        <div className="pointer-events-none absolute inset-0" aria-hidden>
-          <div className="animate-hero-aurora-b absolute top-[-20%] right-[-15%] size-[440px] rounded-full bg-clay-600/15 blur-[130px]" />
-        </div>
-        <BlueprintMarks />
-        <Container className="relative">
-          <Link
-            href="/realisations"
-            className="inline-flex items-center gap-2 text-sm font-medium text-sand-faint hover:text-white"
-          >
-            <ArrowLeft className="size-4" strokeWidth={2.5} />
-            Toutes les réalisations
-          </Link>
-
-          <div className="mt-8 grid grid-cols-1 items-end gap-10 lg:grid-cols-[1.1fr_0.9fr]">
-            <div>
-              <Reveal>
-                <Kicker className="text-clay-400">
-                  {project.metier} · {project.ville}
-                </Kicker>
-              </Reveal>
-              <h1 className="mt-5 font-[family-name:var(--font-display)] text-4xl leading-[1.08] font-normal tracking-[-0.01em] sm:text-6xl">
-                <SplitText trigger="mount" delay={0.05} segments={[{ text: project.name }]} />
-              </h1>
-              <Reveal delay={0.1}>
-                <p className="mt-5 max-w-lg text-lg text-sand">{project.summary}</p>
-              </Reveal>
-              <Reveal delay={0.15} className="mt-6 flex flex-wrap gap-2">
-                {project.status === "concept" && (
-                  <Badge className="border-clay-500/40 bg-clay-500/10 font-semibold text-clay-300">
-                    Projet concept
-                  </Badge>
-                )}
-                {project.caracteristiques.slice(0, 2).map((c) => (
-                  <Badge key={c} className="border-white/15 bg-white/5 text-sand">
-                    {c}
-                  </Badge>
-                ))}
-              </Reveal>
-              {project.liveUrl && (
-                <Reveal delay={0.2} className="mt-7">
-                  <ButtonLink href={project.liveUrl} target="_blank" rel="noopener noreferrer" variant="secondary">
-                    Visiter la démo
-                    <ArrowUpRight className="size-4" strokeWidth={2.5} />
-                  </ButtonLink>
-                </Reveal>
-              )}
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* Grande capture desktop — le vrai site est la vedette de cette page
-          (brief : "voir le projet" doit vraiment montrer le projet). Pas de
-          Tilt/rotation ici, volontairement : cet effet reste réservé à la
-          composition desktop + mobile plus bas, pour ne pas complexifier le
-          tout premier visuel que découvre le visiteur. */}
-      <section className="bg-paper pt-0">
-        <Container className="-mt-14 sm:-mt-16">
-          <Reveal>
-            <BrowserFrame project={project} className="mx-auto w-full" priority />
-          </Reveal>
-        </Container>
-      </section>
-
-      <section className="bg-paper py-24 sm:py-32">
-        <Container className="grid grid-cols-1 gap-10 lg:grid-cols-[0.7fr_1.3fr]">
-          <div>
-            <h2 className="font-[family-name:var(--font-display)] text-2xl font-normal text-ink sm:text-3xl">
-              <SplitText trigger="inView" segments={[{ text: "Objectif du projet" }]} />
-            </h2>
-            <p className="mt-4 text-base leading-relaxed text-ink-soft">{project.objectif}</p>
-
-            <h3 className="mt-10 text-xs font-semibold tracking-[0.14em] text-ink-faint uppercase">
-              Caractéristiques
-            </h3>
-            <ul className="mt-4 flex flex-col gap-2.5">
-              {project.caracteristiques.map((c) => (
-                <li key={c} className="flex items-start gap-2.5 text-sm text-ink-soft">
-                  <span className="mt-2 size-1 shrink-0 rounded-full bg-clay-600" />
-                  {c}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="flex flex-col gap-10">
-            {stages(project).map((stage, i) => (
-              <Reveal key={stage.label} delay={i * 0.05} className="flex gap-6">
-                <span className="w-24 shrink-0 font-[family-name:var(--font-display)] text-sm font-semibold tracking-[0.1em] text-clay-600 uppercase">
-                  {stage.label}
-                </span>
-                <p className="text-base leading-relaxed text-ink-soft">{stage.text}</p>
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* Desktop + mobile — preuve que le site n'est pas pensé que pour
-          grand écran (brief : montrer explicitement les deux formats). */}
-      <section className="border-t border-line bg-paper-dim py-24 sm:py-32">
-        <Container>
-          <Reveal>
-            <Kicker>Sur tous les écrans</Kicker>
-          </Reveal>
-          <Reveal delay={0.05} className="mt-10">
-            <Tilt className="relative pb-[6%]">
-              <BrowserFrame project={project} className="max-w-3xl" />
-              <PhoneFrame project={project} className="absolute -bottom-4 right-[8%] hidden w-[19%] sm:block" />
-            </Tilt>
-          </Reveal>
-        </Container>
-      </section>
-
-      <section className="border-t border-line bg-paper py-16">
-        <Container className="flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-center">
-          <Link href={`/realisations/${next.slug}`} className="group flex items-center gap-4 text-left">
-            <span className="text-xs font-semibold tracking-[0.14em] text-ink-faint uppercase">Projet suivant</span>
-            <span className="flex items-center gap-2 font-[family-name:var(--font-display)] text-xl font-normal text-ink">
-              {next.name}
-              <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" strokeWidth={2.5} />
-            </span>
-          </Link>
-          <ButtonLink href={siteConfig.ctaSecondary.href}>{siteConfig.ctaSecondary.label}</ButtonLink>
-        </Container>
-      </section>
-    </>
-  );
-}
-
-/**
- * Nouvelle mise en page "case study" premium (brief : "SHOW FIRST. EXPLAIN
- * SECOND."). Entièrement pilotée par les données du projet — aucun texte
- * spécifique à un slug n'est codé en dur ici, pour qu'elle s'applique aux
- * deux autres projets sans réécriture le jour où elle sera validée (voir le
- * gate `useCaseStudyLayout` plus bas, à retirer à ce moment-là).
+ * Mise en page "case study" premium (brief : "SHOW FIRST. EXPLAIN SECOND."),
+ * validée en production sur BK+ Plomberie avant d'être appliquée aux deux
+ * autres projets. Entièrement pilotée par les données du projet — aucun
+ * texte spécifique à un slug n'est codé en dur ici.
  *
  * Réutilise les champs existants (probleme/approche/design/resultat/
  * caracteristiques) en leur donnant un habillage éditorial différent,
  * plutôt que d'inventer un nouveau modèle de données : aucun contenu du
- * portfolio n'a été réécrit dans cette passe, uniquement sa présentation.
+ * portfolio n'a été réécrit pour cette mise en page, uniquement sa
+ * présentation.
  */
 function CaseStudyLayout({ project, next }: { project: Project; next: Project }) {
   return (
@@ -407,20 +259,10 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
     ],
   };
 
-  // Nouvelle direction "case study" testée sur un seul projet avant
-  // validation visuelle (brief §25) — repasser cette condition à `true`
-  // inconditionnel (et supprimer LegacyLayout) une fois les trois pages
-  // validées.
-  const useCaseStudyLayout = project.slug === "bk-plomberie";
-
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
-      {useCaseStudyLayout ? (
-        <CaseStudyLayout project={project} next={next} />
-      ) : (
-        <LegacyLayout project={project} next={next} />
-      )}
+      <CaseStudyLayout project={project} next={next} />
     </>
   );
 }

@@ -52,6 +52,8 @@ export const projects: Project[] = [
       mobile: "/projects/le-plombier-istreen/mobile.webp",
       desktopWidth: 1400,
       desktopHeight: 620,
+      mobileWidth: 700,
+      mobileHeight: 1134,
     },
   },
   {
@@ -90,6 +92,8 @@ export const projects: Project[] = [
       mobile: "/projects/bk-plomberie/mobile.webp",
       desktopWidth: 1400,
       desktopHeight: 716,
+      mobileWidth: 700,
+      mobileHeight: 1420,
     },
   },
   {
@@ -128,6 +132,8 @@ export const projects: Project[] = [
       mobile: "/projects/daiselec/mobile.webp",
       desktopWidth: 1400,
       desktopHeight: 751,
+      mobileWidth: 700,
+      mobileHeight: 1410,
     },
   },
 ];

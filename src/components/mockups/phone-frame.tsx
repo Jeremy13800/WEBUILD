@@ -5,10 +5,16 @@ import { cn } from "@/lib/utils";
 /** Aperçu "mobile" d'un projet — même logique que BrowserFrame : si
  * `project.screenshots.mobile` existe, affiche la vraie capture mobile du
  * site ; sinon retombe sur l'aperçu simulé (mêmes hauteurs fixes, même
- * raison — voir BrowserFrame). */
+ * raison — voir BrowserFrame). Le cadre adopte le ratio exact du fichier
+ * réel (comme BrowserFrame) : un ratio fixe générique coupait le contenu
+ * dès que l'aspect d'une vraie capture s'en écartait un peu. */
 export function PhoneFrame({ project, className }: { project: Project; className?: string }) {
   const { fond, fondSombre, accent } = project.palette;
   const shot = project.screenshots?.mobile;
+  const shotWidth = project.screenshots?.mobileWidth;
+  const shotHeight = project.screenshots?.mobileHeight;
+  const shotAspectStyle =
+    shot && shotWidth && shotHeight ? { aspectRatio: `${shotWidth} / ${shotHeight}` } : undefined;
 
   return (
     <div
@@ -19,7 +25,10 @@ export function PhoneFrame({ project, className }: { project: Project; className
       style={{ backgroundColor: fond.color }}
     >
       {shot ? (
-        <div className="relative aspect-[9/18.5] w-full overflow-hidden">
+        <div
+          className={cn("relative w-full overflow-hidden", !shotAspectStyle && "aspect-9/18.5")}
+          style={shotAspectStyle}
+        >
           <Image
             src={shot}
             alt={`Version mobile du site ${project.name}`}
