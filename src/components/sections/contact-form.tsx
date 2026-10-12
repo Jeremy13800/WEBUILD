@@ -1,11 +1,25 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { ArrowLeft, ArrowRight, CheckCircle2, Lock, Send } from "lucide-react";
-import { siteConfig } from "@/data/site";
 import { pricingTiers } from "@/data/pricing";
+import {
+  budgetLabel,
+  budgetOptions,
+  delaiOptions,
+  metierOptions,
+  objectifOptions,
+  sourceOptions,
+  yesNoOptions,
+} from "@/data/contact-form";
+import {
+  HONEYPOT_FIELD,
+  contactFieldRules,
+  fieldError,
+  type ContactField,
+} from "@/lib/contact-validation";
 import { cn } from "@/lib/utils";
 
 // `+10%` sur la taille/l'espacement des champs par rapport à un input
@@ -18,26 +32,23 @@ const inputClass =
 
 const steps = ["Vous", "Votre activité", "Votre projet", "Derniers détails"];
 
-const objectifs = [
-  "Être trouvé sur Google",
-  "Avoir plus d'appels et de devis",
-  "Présenter mes réalisations",
-  "Remplacer un site existant",
-  "Je ne sais pas encore précisément",
+/** Étape où se trouve chaque champ — pour y ramener l'utilisateur en cas d'erreur. */
+const fieldsByStep: ContactField[][] = [
+  ["nom", "entreprise", "telephone", "email"],
+  ["metier", "ville", "zoneIntervention", "siteActuel"],
+  ["objectif", "budget", "delai"],
+  ["googleBusiness", "logo", "photos", "source", "commentaires"],
 ];
+const stepOf = (field: ContactField) => fieldsByStep.findIndex((fields) => fields.includes(field));
 
-const budgets = pricingTiers
-  .map((t) => `${t.name} — à partir de ${t.fromPrice} €`)
-  .concat("Je ne sais pas encore");
-
-const delais = ["Dès que possible", "Dans le mois", "Dans les 3 mois", "Pas de délai précis"];
-
-const sources = [
-  "Recherche Google",
-  "Réseaux sociaux",
-  "Recommandation / bouche-à-oreille",
-  "Autre",
-];
+/** Première erreur des champs donnés (déjà saisis), ou "". */
+function firstFieldError(form: Record<ContactField, string>, fields: ContactField[]) {
+  for (const field of fields) {
+    const message = fieldError(field, form[field].trim());
+    if (message) return message;
+  }
+  return "";
+}
 
 type FormState = {
   nom: string;
@@ -81,8 +92,12 @@ const emptyForm: FormState = {
 const submitErrors = {
   not_configured:
     "Le formulaire est temporairement indisponible : votre demande n'a pas été envoyée. Vos informations sont conservées, vous pourrez réessayer un peu plus tard.",
-  missing_fields:
-    "Votre demande n'a pas été envoyée : indiquez au moins votre nom, votre métier, votre ville et un moyen de vous recontacter.",
+  too_fast:
+    "Votre demande n'a pas été envoyée : merci de patienter quelques secondes, puis de cliquer à nouveau sur « Envoyer ma demande ».",
+  rate_limited:
+    "Votre demande n'a pas été envoyée : trop de tentatives depuis votre connexion. Vos informations sont conservées, réessayez dans une dizaine de minutes.",
+  payload_too_large:
+    "Votre demande n'a pas été envoyée : elle est trop longue. Raccourcissez votre commentaire, puis réessayez.",
   default:
     "L'envoi a échoué : votre demande n'a pas été transmise. Vos informations sont conservées, vous pouvez réessayer.",
 };
@@ -104,8 +119,19 @@ export function ContactForm() {
   const [error, setError] = useState("");
   const [form, setForm] = useState<FormState>({
     ...emptyForm,
-    budget: preselectedTier ? `${preselectedTier.name} — à partir de ${preselectedTier.fromPrice} €` : "",
+    budget: preselectedTier ? budgetLabel(preselectedTier) : "",
   });
+  // Champ piège (honeypot) : invisible et hors tabulation, seul un robot
+  // qui remplit tous les champs du HTML y écrit quelque chose.
+  const [honeypot, setHoneypot] = useState("");
+  // Moment d'affichage du formulaire, pour le délai minimal de remplissage
+  // contrôlé côté serveur ; verrou synchrone contre le double envoi (un
+  // second clic/Entrée peut arriver avant que `status` ne soit re-rendu).
+  const startedAt = useRef(0);
+  const submitting = useRef(false);
+  useEffect(() => {
+    startedAt.current = Date.now();
+  }, []);
 
   function update<K extends keyof FormState>(field: K) {
     return (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
@@ -113,12 +139,17 @@ export function ContactForm() {
   }
 
   function goNext() {
-    if (step === 0 && (!form.nom || (!form.telephone && !form.email))) {
+    if (step === 0 && (!form.nom.trim() || (!form.telephone.trim() && !form.email.trim()))) {
       setError("Indiquez au moins votre nom et un moyen de vous recontacter (téléphone ou email).");
       return;
     }
-    if (step === 1 && (!form.metier || !form.ville)) {
+    if (step === 1 && (!form.metier || !form.ville.trim())) {
       setError("Indiquez votre métier et votre ville pour continuer.");
+      return;
+    }
+    const stepError = firstFieldError(form, fieldsByStep[step]);
+    if (stepError) {
+      setError(stepError);
       return;
     }
     setError("");
@@ -130,8 +161,26 @@ export function ContactForm() {
     setStep((s) => Math.max(s - 1, 0));
   }
 
+  /** Affiche l'erreur et ramène à l'étape du premier champ concerné. */
+  function showFieldErrors(fields: ContactField[]) {
+    const first = fields[0];
+    const message = first ? fieldError(first, form[first].trim()) : null;
+    const labels = fields.map((f) => contactFieldRules[f].label).join(", ");
+    setError(`Votre demande n'a pas été envoyée. ${message ?? `Vérifiez : ${labels}.`}`);
+    if (first) setStep(stepOf(first));
+  }
+
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    if (submitting.current) return;
+
+    const invalid = (Object.keys(contactFieldRules) as ContactField[]).filter((f) => fieldError(f, form[f].trim()));
+    if (invalid.length > 0) {
+      showFieldErrors(invalid);
+      return;
+    }
+
+    submitting.current = true;
     setError("");
     setStatus("sending");
 
@@ -139,17 +188,29 @@ export function ContactForm() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, [HONEYPOT_FIELD]: honeypot, elapsedMs: Date.now() - startedAt.current }),
       });
-      const data: { ok?: unknown; error?: unknown } | null = await res.json().catch(() => null);
+      const data: { ok?: unknown; error?: unknown; fields?: unknown } | null = await res.json().catch(() => null);
       if (res.ok && data?.ok === true) {
         setStatus("sent");
         return;
       }
       const code = data?.error;
-      setError(code === "not_configured" || code === "missing_fields" ? submitErrors[code] : submitErrors.default);
+      if (code === "invalid_fields" && Array.isArray(data?.fields)) {
+        showFieldErrors(data.fields.filter((f): f is ContactField => typeof f === "string" && f in contactFieldRules));
+      } else if (code === "not_configured" || code === "too_fast" || code === "payload_too_large") {
+        setError(submitErrors[code]);
+      } else if (res.status === 429) {
+        // Limite du pare-feu Vercel (règle "Contact Form Rate Limit") :
+        // réponse qui ne vient pas de la route, souvent non JSON.
+        setError(submitErrors.rate_limited);
+      } else {
+        setError(submitErrors.default);
+      }
     } catch {
       setError(submitErrors.default);
+    } finally {
+      submitting.current = false;
     }
     setStatus("idle");
   }
@@ -194,6 +255,21 @@ export function ContactForm() {
 
   return (
     <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className="flex w-full flex-col gap-7">
+      {/* Champ piège : hors écran (pas `display:none`, que certains robots
+          savent ignorer), retiré de la tabulation et des lecteurs d'écran. */}
+      <div aria-hidden style={{ position: "absolute", left: "-10000px", width: 1, height: 1, overflow: "hidden" }}>
+        <label>
+          Ne pas remplir ce champ
+          <input
+            type="text"
+            name={HONEYPOT_FIELD}
+            tabIndex={-1}
+            autoComplete="off"
+            value={honeypot}
+            onChange={(e) => setHoneypot(e.target.value)}
+          />
+        </label>
+      </div>
       {/* Progression */}
       <div>
         <div className="flex items-center justify-between text-sm font-medium text-ink-faint">
@@ -213,11 +289,20 @@ export function ContactForm() {
       {step === 0 && (
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           <Field label="Nom complet" required>
-            <input type="text" required value={form.nom} onChange={update("nom")} placeholder="Jean Dupont" className={inputClass} />
+            <input
+              type="text"
+              required
+              maxLength={contactFieldRules.nom.max}
+              value={form.nom}
+              onChange={update("nom")}
+              placeholder="Jean Dupont"
+              className={inputClass}
+            />
           </Field>
           <Field label="Entreprise">
             <input
               type="text"
+              maxLength={contactFieldRules.entreprise.max}
               value={form.entreprise}
               onChange={update("entreprise")}
               placeholder="Nom de votre entreprise"
@@ -227,6 +312,7 @@ export function ContactForm() {
           <Field label="Téléphone">
             <input
               type="tel"
+              maxLength={contactFieldRules.telephone.max}
               value={form.telephone}
               onChange={update("telephone")}
               placeholder="06 12 34 56 78"
@@ -236,6 +322,7 @@ export function ContactForm() {
           <Field label="Email">
             <input
               type="email"
+              maxLength={contactFieldRules.email.max}
               value={form.email}
               onChange={update("email")}
               placeholder="vous@exemple.fr"
@@ -250,20 +337,28 @@ export function ContactForm() {
           <Field label="Votre métier" required>
             <select value={form.metier} onChange={update("metier")} className={cn(inputClass, "appearance-none")}>
               <option value="">Sélectionnez votre métier</option>
-              {siteConfig.metiers.map((m) => (
+              {metierOptions.map((m) => (
                 <option key={m} value={m}>
                   {m}
                 </option>
               ))}
-              <option value="Autre">Autre</option>
             </select>
           </Field>
           <Field label="Ville" required>
-            <input type="text" required value={form.ville} onChange={update("ville")} placeholder="Istres" className={inputClass} />
+            <input
+              type="text"
+              required
+              maxLength={contactFieldRules.ville.max}
+              value={form.ville}
+              onChange={update("ville")}
+              placeholder="Istres"
+              className={inputClass}
+            />
           </Field>
           <Field label="Zone d'intervention">
             <input
               type="text"
+              maxLength={contactFieldRules.zoneIntervention.max}
               value={form.zoneIntervention}
               onChange={update("zoneIntervention")}
               placeholder="Ex : Istres, Fos-sur-Mer, Martigues…"
@@ -273,6 +368,7 @@ export function ContactForm() {
           <Field label="Site actuel (si vous en avez un)">
             <input
               type="text"
+              maxLength={contactFieldRules.siteActuel.max}
               value={form.siteActuel}
               onChange={update("siteActuel")}
               placeholder="URL ou « aucun pour l'instant »"
@@ -287,7 +383,7 @@ export function ContactForm() {
           <Field label="Objectif principal">
             <select value={form.objectif} onChange={update("objectif")} className={cn(inputClass, "appearance-none")}>
               <option value="">Sélectionnez un objectif</option>
-              {objectifs.map((o) => (
+              {objectifOptions.map((o) => (
                 <option key={o} value={o}>
                   {o}
                 </option>
@@ -297,7 +393,7 @@ export function ContactForm() {
           <Field label="Budget indicatif">
             <select value={form.budget} onChange={update("budget")} className={cn(inputClass, "appearance-none")}>
               <option value="">Sélectionnez une fourchette</option>
-              {budgets.map((b) => (
+              {budgetOptions.map((b) => (
                 <option key={b} value={b}>
                   {b}
                 </option>
@@ -307,7 +403,7 @@ export function ContactForm() {
           <Field label="Délai souhaité" className="sm:col-span-2">
             <select value={form.delai} onChange={update("delai")} className={cn(inputClass, "appearance-none")}>
               <option value="">Sélectionnez un délai</option>
-              {delais.map((d) => (
+              {delaiOptions.map((d) => (
                 <option key={d} value={d}>
                   {d}
                 </option>
@@ -327,7 +423,7 @@ export function ContactForm() {
           <Field label="Comment nous avez-vous connus ?">
             <select value={form.source} onChange={update("source")} className={cn(inputClass, "appearance-none")}>
               <option value="">Sélectionnez une réponse</option>
-              {sources.map((s) => (
+              {sourceOptions.map((s) => (
                 <option key={s} value={s}>
                   {s}
                 </option>
@@ -337,6 +433,7 @@ export function ContactForm() {
           <Field label="Un commentaire à ajouter ?">
             <textarea
               rows={4}
+              maxLength={contactFieldRules.commentaires.max}
               value={form.commentaires}
               onChange={update("commentaires")}
               placeholder="Tout ce qui peut m'aider à comprendre votre projet…"
@@ -440,12 +537,11 @@ function RadioField({
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
-  const options = ["Oui", "Non", "Je ne sais pas"];
   return (
     <div className="flex flex-col gap-2 text-sm">
       <span className="font-medium text-ink">{label}</span>
       <div className="flex flex-col gap-1.5">
-        {options.map((opt) => (
+        {yesNoOptions.map((opt) => (
           <label key={opt} className="flex items-center gap-2 text-ink-soft">
             <input
               type="radio"
