@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { siteConfig } from "@/data/site";
 import { pricingTiers, maintenancePlan } from "@/data/pricing";
 import { Container } from "@/components/ui/container";
+import { ContactEmailLink } from "@/components/ui/contact-email-link";
 
 export const metadata: Metadata = {
   title: "Conditions générales de vente",
@@ -122,10 +123,11 @@ export default function CgvPage() {
           <div>
             <h2 className="mb-2 text-base font-semibold text-ink">10. Contact</h2>
             <p>
-              Pour toute question relative à ces conditions, contactez-nous à{" "}
-              <a href={`mailto:${siteConfig.email.address}`} className="font-medium text-clay-600 hover:underline">
-                {siteConfig.email.address}
-              </a>
+              Pour toute question relative à ces conditions, contactez-nous via{" "}
+              <ContactEmailLink
+                fallbackLabel="le formulaire de contact"
+                className="font-medium text-clay-600 hover:underline"
+              />
               .
             </p>
           </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { siteConfig } from "@/data/site";
 import { Container } from "@/components/ui/container";
+import { ContactEmailLink } from "@/components/ui/contact-email-link";
 
 export const metadata: Metadata = {
   title: "Politique de confidentialité",
@@ -45,10 +46,11 @@ export default function PolitiqueConfidentialitePage() {
             <p>
               Conformément au Règlement Général sur la Protection des Données (RGPD), vous disposez d&apos;un
               droit d&apos;accès, de rectification et de suppression des données vous concernant. Pour l&apos;exercer,
-              contactez-nous à l&apos;adresse{" "}
-              <a href={`mailto:${siteConfig.email.address}`} className="font-medium text-clay-600 hover:underline">
-                {siteConfig.email.address}
-              </a>
+              contactez-nous via{" "}
+              <ContactEmailLink
+                fallbackLabel="le formulaire de contact"
+                className="font-medium text-clay-600 hover:underline"
+              />
               .
             </p>
           </div>

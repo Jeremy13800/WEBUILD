@@ -1,17 +1,21 @@
 import { NextResponse } from "next/server";
 import { siteConfig } from "@/data/site";
 import { contactEmailBody, contactEmailSubject, type ContactFormFields } from "@/lib/contact-email";
+import { resolveContactRecipients } from "@/lib/contact-recipient";
 
 /**
- * Point de chute du formulaire de contact (brief §16-17, voir aussi
+ * Point de chute du formulaire de contact (voir aussi
  * components/sections/contact-form.tsx).
  *
- * Tant que `RESEND_API_KEY` n'est pas configurée (voir .env.example), cette
- * route répond volontairement 503 `not_configured` : le formulaire bascule
- * alors sur son repli `mailto:` existant, qui fonctionne dès aujourd'hui
- * sans aucune configuration. Une fois la clé ajoutée, l'envoi se fait
- * silencieusement en arrière-plan et l'utilisateur n'a plus besoin d'un
- * client mail configuré sur son appareil pour que la demande parte.
+ * Le destinataire vient UNIQUEMENT de `CONTACT_TO_EMAIL` (variable serveur,
+ * jamais exposée au navigateur) : aucune adresse par défaut dans le code.
+ * Si elle est absente, invalide ou sur un domaine bloqué (voir
+ * lib/contact-recipient.ts), ou si `RESEND_API_KEY` manque, la route
+ * refuse avec 503 `not_configured` AVANT même de lire la demande — aucune
+ * donnée n'est envoyée nulle part, et le formulaire affiche une erreur.
+ *
+ * Les logs ne contiennent jamais le contenu de la demande (données
+ * personnelles) : seulement la raison technique ou le statut HTTP.
  *
  * Pas de SDK `resend` ajouté : leur API HTTP est un simple POST JSON, ce
  * qui évite une dépendance supplémentaire pour un unique endpoint.
@@ -30,7 +34,12 @@ function isValidPayload(body: unknown): body is ContactFormFields {
 
 export async function POST(request: Request) {
   const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
+  const recipients = resolveContactRecipients(process.env.CONTACT_TO_EMAIL);
+  if (!apiKey || !recipients.ok) {
+    console.error(
+      "Contact route misconfigured:",
+      !apiKey ? "RESEND_API_KEY missing" : `CONTACT_TO_EMAIL ${recipients.ok ? "ok" : recipients.reason}`,
+    );
     return NextResponse.json({ ok: false, error: "not_configured" }, { status: 503 });
   }
 
@@ -45,7 +54,6 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: false, error: "missing_fields" }, { status: 400 });
   }
 
-  const to = process.env.CONTACT_TO_EMAIL || siteConfig.email.address;
   const from = process.env.CONTACT_FROM_EMAIL || `${siteConfig.name} <onboarding@resend.dev>`;
 
   try {
@@ -57,7 +65,7 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         from,
-        to,
+        to: recipients.to,
         reply_to: body.email || undefined,
         subject: contactEmailSubject(body),
         text: contactEmailBody(body),
@@ -65,14 +73,15 @@ export async function POST(request: Request) {
     });
 
     if (!res.ok) {
-      const detail = await res.text();
-      console.error("Resend error:", res.status, detail);
+      // Statut seul : le corps de la réponse Resend peut reprendre des
+      // éléments de la demande.
+      console.error("Resend error: HTTP", res.status);
       return NextResponse.json({ ok: false, error: "send_failed" }, { status: 502 });
     }
 
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error("Contact route error:", err);
+    console.error("Contact route error:", err instanceof Error ? err.name : "unknown");
     return NextResponse.json({ ok: false, error: "send_failed" }, { status: 502 });
   }
 }

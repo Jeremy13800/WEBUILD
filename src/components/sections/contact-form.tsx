@@ -6,7 +6,6 @@ import { useSearchParams } from "next/navigation";
 import { ArrowLeft, ArrowRight, CheckCircle2, Lock, Send } from "lucide-react";
 import { siteConfig } from "@/data/site";
 import { pricingTiers } from "@/data/pricing";
-import { contactEmailBody, contactEmailSubject } from "@/lib/contact-email";
 import { cn } from "@/lib/utils";
 
 // `+10%` sur la taille/l'espacement des champs par rapport à un input
@@ -78,13 +77,22 @@ const emptyForm: FormState = {
   commentaires: "",
 };
 
+/** Messages affichés selon le code d'erreur renvoyé par `/api/contact`. */
+const submitErrors = {
+  not_configured:
+    "Le formulaire est temporairement indisponible : votre demande n'a pas été envoyée. Vos informations sont conservées, vous pourrez réessayer un peu plus tard.",
+  missing_fields:
+    "Votre demande n'a pas été envoyée : indiquez au moins votre nom, votre métier, votre ville et un moyen de vous recontacter.",
+  default:
+    "L'envoi a échoué : votre demande n'a pas été transmise. Vos informations sont conservées, vous pouvez réessayer.",
+};
+
 /**
- * Formulaire de contact progressif (brief §16-17). Envoi en deux temps :
- * on tente d'abord `/api/contact` (voir cette route) pour un vrai envoi
- * silencieux ; si elle répond "not_configured" (pas de RESEND_API_KEY —
- * voir .env.example) ou échoue pour une autre raison, on retombe sur le
- * repli `mailto:` d'origine, qui fonctionne sans aucune configuration.
- * L'utilisateur n'a jamais à savoir lequel des deux chemins a été pris.
+ * Formulaire de contact progressif (brief §16-17), envoyé uniquement via
+ * `/api/contact`. Le succès n'est affiché QUE sur une réponse `{ ok: true }`
+ * du serveur — jamais de repli `mailto:` ni de fausse confirmation : en cas
+ * d'échec, la saisie est conservée, un message d'erreur s'affiche et le
+ * bouton d'envoi reste disponible pour réessayer.
  */
 export function ContactForm() {
   const searchParams = useSearchParams();
@@ -92,7 +100,7 @@ export function ContactForm() {
   const preselectedTier = pricingTiers.find((t) => t.slug === preselectedOffer);
 
   const [step, setStep] = useState(0);
-  const [status, setStatus] = useState<"idle" | "sending" | "sent-api" | "sent-mailto">("idle");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
   const [error, setError] = useState("");
   const [form, setForm] = useState<FormState>({
     ...emptyForm,
@@ -122,15 +130,9 @@ export function ContactForm() {
     setStep((s) => Math.max(s - 1, 0));
   }
 
-  function fallbackToMailto() {
-    const subject = contactEmailSubject(form);
-    const body = contactEmailBody(form);
-    window.location.href = `mailto:${siteConfig.email.address}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-    setStatus("sent-mailto");
-  }
-
   async function handleSubmit(e: FormEvent) {
     e.preventDefault();
+    setError("");
     setStatus("sending");
 
     try {
@@ -139,49 +141,28 @@ export function ContactForm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form),
       });
-      const data: { ok: boolean } = await res.json();
-      if (res.ok && data.ok) {
-        setStatus("sent-api");
-      } else {
-        fallbackToMailto();
+      const data: { ok?: unknown; error?: unknown } | null = await res.json().catch(() => null);
+      if (res.ok && data?.ok === true) {
+        setStatus("sent");
+        return;
       }
+      const code = data?.error;
+      setError(code === "not_configured" || code === "missing_fields" ? submitErrors[code] : submitErrors.default);
     } catch {
-      fallbackToMailto();
+      setError(submitErrors.default);
     }
+    setStatus("idle");
   }
 
-  if (status === "sent-api" || status === "sent-mailto") {
+  if (status === "sent") {
     return (
       <div className="flex h-full min-h-[360px] flex-col items-center justify-center gap-4 text-center">
         <div className="grid size-12 place-items-center rounded-full bg-clay-50 text-clay-600">
           <CheckCircle2 className="size-6" strokeWidth={2} />
         </div>
         <div>
-          {status === "sent-api" ? (
-            <>
-              <p className="font-semibold text-ink">Votre demande est bien partie</p>
-              <p className="mt-1 max-w-sm text-sm text-ink-soft">
-                Je vous réponds généralement sous 24 à 48h. En attendant, vous pouvez toujours m&apos;écrire
-                directement à{" "}
-                <a href={`mailto:${siteConfig.email.address}`} className="font-medium text-clay-600 hover:underline">
-                  {siteConfig.email.address}
-                </a>
-                .
-              </p>
-            </>
-          ) : (
-            <>
-              <p className="font-semibold text-ink">Votre client mail va s&apos;ouvrir</p>
-              <p className="mt-1 max-w-sm text-sm text-ink-soft">
-                Votre demande est pré-remplie — il ne reste plus qu&apos;à cliquer sur envoyer. Pas de messagerie
-                configurée sur cet appareil ? Écrivez-moi directement à{" "}
-                <a href={`mailto:${siteConfig.email.address}`} className="font-medium text-clay-600 hover:underline">
-                  {siteConfig.email.address}
-                </a>
-                .
-              </p>
-            </>
-          )}
+          <p className="font-semibold text-ink">Votre demande est bien partie</p>
+          <p className="mt-1 max-w-sm text-sm text-ink-soft">Je vous réponds généralement sous 24 à 48h.</p>
         </div>
         <button
           type="button"
@@ -365,7 +346,11 @@ export function ContactForm() {
         </div>
       )}
 
-      {error && <p className="text-sm font-medium text-clay-700">{error}</p>}
+      {error && (
+        <p role="alert" className="text-sm font-medium text-clay-700">
+          {error}
+        </p>
+      )}
 
       <div className="flex items-center justify-between pt-2">
         {step > 0 ? (

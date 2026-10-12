@@ -3,6 +3,7 @@ import Link from "next/link";
 import { siteConfig } from "@/data/site";
 import { Container } from "@/components/ui/container";
 import { ButtonLink } from "@/components/ui/button";
+import { ContactEmailLink } from "@/components/ui/contact-email-link";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -60,12 +61,7 @@ export function Footer() {
           </FooterColumn>
 
           <FooterColumn title="Contact">
-            <a
-              href={`mailto:${siteConfig.email.address}`}
-              className="text-sm text-sand-faint transition-colors hover:text-white"
-            >
-              {siteConfig.email.address}
-            </a>
+            <ContactEmailLink className="text-sm text-sand-faint transition-colors hover:text-white" />
             <span className="text-sm text-sand-faint">
               {siteConfig.address.city}, {siteConfig.address.region}
             </span>

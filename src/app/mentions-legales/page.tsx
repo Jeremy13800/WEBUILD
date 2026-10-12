@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { siteConfig } from "@/data/site";
 import { Container } from "@/components/ui/container";
+import { ContactEmailLink } from "@/components/ui/contact-email-link";
 
 export const metadata: Metadata = {
   title: "Mentions légales",
@@ -36,7 +37,11 @@ export default function MentionsLegalesPage() {
               <br />
               Forme juridique, SIRET et adresse du siège : en cours de finalisation.
               <br />
-              Contact : {siteConfig.email.address}
+              Contact :{" "}
+              <ContactEmailLink
+                fallbackLabel="formulaire de contact"
+                className="font-medium text-clay-600 hover:underline"
+              />
             </p>
           </div>
 

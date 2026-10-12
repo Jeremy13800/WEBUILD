@@ -20,6 +20,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/reveal";
 import { SplitText } from "@/components/motion/split-text";
 import { ContactForm } from "@/components/sections/contact-form";
+import { ContactEmailLink } from "@/components/ui/contact-email-link";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -203,15 +204,15 @@ export default function ContactPage() {
                   Un premier échange, <span className="text-clay-400">sans détour.</span>
                 </h2>
                 <div className="flex flex-col gap-4">
-                  <a
-                    href={`mailto:${siteConfig.email.address}`}
+                  <ContactEmailLink
+                    fallbackHref="#formulaire"
                     className="flex items-center gap-3 text-sm font-medium text-sand transition-colors hover:text-white"
-                  >
-                    <span className="grid size-9 shrink-0 place-items-center rounded-full border border-white/15 bg-white/5 text-clay-400">
-                      <Mail className="size-4" strokeWidth={2} />
-                    </span>
-                    {siteConfig.email.address}
-                  </a>
+                    icon={
+                      <span className="grid size-9 shrink-0 place-items-center rounded-full border border-white/15 bg-white/5 text-clay-400">
+                        <Mail className="size-4" strokeWidth={2} />
+                      </span>
+                    }
+                  />
                   <span className="flex items-center gap-3 text-sm text-sand-faint">
                     <span className="grid size-9 shrink-0 place-items-center rounded-full border border-white/15 bg-white/5 text-clay-400">
                       <MapPin className="size-4" strokeWidth={2} />
@@ -242,7 +243,7 @@ export default function ContactPage() {
                 carte. `justify-center` : cette colonne suit la hauteur fixe
                 du panneau gauche (grid stretch) alors que le contenu du
                 formulaire varie selon l'étape. */}
-            <div className="relative flex flex-col justify-center p-7 sm:p-11 lg:p-12">
+            <div id="formulaire" className="relative flex scroll-mt-24 flex-col justify-center p-7 sm:p-11 lg:p-12">
               {/* Lumière argile à la jonction des deux panneaux — demandée
                   explicitement par le client, même traitement (dégradé +
                   double lueur) que les autres jonctions sombre/clair du

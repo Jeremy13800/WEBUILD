@@ -1,6 +1,6 @@
 import { ArrowRight } from "lucide-react";
-import { siteConfig } from "@/data/site";
 import { Container } from "@/components/ui/container";
+import { ContactEmailLink } from "@/components/ui/contact-email-link";
 import { ButtonLink } from "@/components/ui/button";
 import { Kicker } from "@/components/ui/badge";
 import { SplitText } from "@/components/motion/split-text";
@@ -32,10 +32,9 @@ export default function NotFound() {
           </ButtonLink>
         </div>
         <p className="text-sm text-sand-faint">
-          Ou écrivez-moi directement à{" "}
-          <a href={`mailto:${siteConfig.email.address}`} className="font-medium text-white hover:underline">
-            {siteConfig.email.address}
-          </a>
+          Ou écrivez-moi via{" "}
+          <ContactEmailLink fallbackLabel="le formulaire de contact" className="font-medium text-white hover:underline" />
+          .
         </p>
       </Container>
     </section>

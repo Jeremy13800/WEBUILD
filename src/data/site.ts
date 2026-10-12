@@ -39,9 +39,14 @@ export const siteConfig = {
     "WeBuild conçoit des sites internet modernes et professionnels pour les artisans du bâtiment : plombiers, électriciens, chauffagistes, couvreurs, menuisiers, paysagistes… Un site qui inspire confiance, se trouve sur Google et transforme vos visiteurs en appels.",
 
   email: {
-    // TODO(client) : adresse email définitive à confirmer avant mise en ligne —
-    // c'est ici qu'atterrissent les demandes du formulaire de contact.
-    address: "bonjour@webuild.fr",
+    // TODO(client) : adresse email publique définitive (nouveau nom de
+    // domaine). Vide tant qu'aucune adresse professionnelle n'est vérifiée :
+    // les liens email du site renvoient alors vers le formulaire (voir
+    // components/ui/contact-email-link.tsx). Ne JAMAIS remettre
+    // bonjour@webuild.fr — ce domaine appartient à une entreprise tierce.
+    // N'est pas le destinataire du formulaire : celui-ci vient uniquement
+    // de la variable serveur CONTACT_TO_EMAIL (voir api/contact/route.ts).
+    address: "" as string,
   },
 
   // TODO(client) : numéro de téléphone à renseigner si un contact

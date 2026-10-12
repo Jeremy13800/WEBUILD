@@ -1,8 +1,6 @@
 /**
- * Mise en forme du contenu du formulaire de contact en texte brut —
- * partagée entre le corps de la requête `mailto:` (repli côté client) et
- * l'email envoyé par la route API (src/app/api/contact/route.ts), pour que
- * les deux chemins produisent exactement le même contenu.
+ * Mise en forme du contenu du formulaire de contact en texte brut, pour
+ * l'email envoyé par la route API (src/app/api/contact/route.ts).
  */
 export type ContactFormFields = {
   nom: string;

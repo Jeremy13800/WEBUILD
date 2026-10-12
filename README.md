@@ -30,12 +30,14 @@ composants : ils lisent tous ces fichiers.
 
 ## Formulaire de contact
 
-Le formulaire (`/contact`) fonctionne via un repli `mailto:` sans
-configuration, ou via un envoi direct (Resend) une fois `RESEND_API_KEY`
-renseignée — copiez `.env.example` en `.env.local` (voir
-[resend.com/api-keys](https://resend.com/api-keys)), détails dans
-`src/app/api/contact/route.ts`. Envoi direct testé et fonctionnel en
-production comme en local.
+Le formulaire (`/contact`) envoie uniquement via Resend, depuis
+`src/app/api/contact/route.ts`. `RESEND_API_KEY` et `CONTACT_TO_EMAIL` sont
+obligatoires — copiez `.env.example` en `.env.local` (voir
+[resend.com/api-keys](https://resend.com/api-keys)). Sans configuration
+valide, aucun envoi n'a lieu et le formulaire affiche une erreur : il n'y a
+ni repli `mailto:` ni destinataire par défaut. Les adresses en `webuild.fr`
+(domaine appartenant à un tiers) sont refusées, voir
+`src/lib/contact-recipient.ts`.
 
 ## Pages légales
 
